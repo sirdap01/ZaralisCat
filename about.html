@@ -1,212 +1,379 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tentang Kami - Zarali's Catering</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang Kami - Zarali's Catering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<style>
-/* =========================================
-   WARNA UTAMA
-========================================= */
-:root {
-  --primary-purple: #7B2CBF;
-  --accent-purple: #9D4EDD;
-  --secondary-gold: #FFD700;
-  --text-dark: #222;
-  --background-light: #FFFDF8;
-}
+  <style>
+    :root {
+      --primary-purple: #7B2CBF;
+      --secondary-gold: #FFD700;
+      --accent-purple: #9D4EDD;
+      --text-dark: #222;
+      --background-light: #FFFDF8;
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
 
-body {
-  background: var(--background-light);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+    body {
+      background-color: var(--background-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* =========================================
-   HEADER (KONSISTEN DARI SEMUA HALAMAN)
-========================================= */
-header {
-  background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
-  color: white;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
+    /* =====================================
+       HEADER (KONSISTEN)
+    ===================================== */
+    header {
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 85px;
+      box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 280px;
+    }
 
-.logo {
-  max-height: 50px;
-  border-radius: 50%;
-}
+    .logo {
+      max-height: 55px;
+      border-radius: 50%;
+      border: 3px solid var(--secondary-gold);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
 
-header h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
+    .logo:hover {
+      transform: scale(1.05);
+    }
 
-.nav-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
+    header h1 {
+      font-weight: 700;
+      font-size: 1.9rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
 
-nav {
-  display: flex;
-  gap: 25px;
-}
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
 
-nav a {
-  text-decoration: none;
-  color: white;
-  font-weight: 600;
-  font-size: 15px;
-  transition: 0.2s;
-}
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 6px;
+      position: relative;
+    }
 
-nav a:hover,
-nav a.active {
-  color: var(--secondary-gold);
-}
+    nav a:hover {
+      color: var(--secondary-gold);
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
 
-/* =========================================
-   BANNER FOTO BELAKANG
-========================================= */
-.about-banner {
-  background-image: url("../gambar/banner_about.jpg"); 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    nav a.active {
+      background-color: rgba(255, 215, 0, 0.2);
+      color: var(--secondary-gold);
+    }
 
-  height: 350px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-}
+    /* =====================================
+       BANNER FOTO BELAKANG
+    ===================================== */
+    .about-banner {
+      background-image: url("gambar/banner_about.jpg"); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 500px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      position: relative;
+    }
 
-/* =========================================
-   KOTAK UNGU TRANSPARAN
-========================================= */
-.about-box {
-  background: rgba(123, 44, 191, 0.78); /* ungu transparan */
-  border: 4px solid var(--secondary-gold);
-  border-radius: 25px;
-  width: 60%;
-  padding: 35px;
-  color: white;
-  text-align: center;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
+    .about-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.3), rgba(157, 78, 221, 0.3));
+      pointer-events: none;
+    }
 
-.about-box h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
+    /* =====================================
+       KOTAK UNGU TRANSPARAN (ENHANCED)
+    ===================================== */
+    .about-box {
+      background: rgba(123, 44, 191, 0.85);
+      border: 4px solid var(--secondary-gold);
+      border-radius: 25px;
+      max-width: 900px;
+      width: 85%;
+      padding: 50px;
+      color: white;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 2;
+      animation: fadeInScale 0.8s ease;
+    }
 
-.about-box p {
-  font-size: 16px;
-  line-height: 1.65;
-  text-align: justify;
-}
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
 
-/* =========================================
-   RESPONSIVE
-========================================= */
-@media (max-width: 768px) {
-  .about-box {
-    width: 90%;
-    padding: 25px;
-  }
-  .about-box h2 {
-    font-size: 24px;
-  }
-  .about-box p {
-    font-size: 15px;
-  }
-}
+    .about-box h2 {
+      font-size: 36px;
+      margin-bottom: 30px;
+      font-weight: 700;
+      color: var(--secondary-gold);
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      letter-spacing: 1px;
+    }
 
-/* =========================================
-   FOOTER
-========================================= */
-footer {
-  background: var(--primary-purple);
-  padding: 15px;
-  text-align: center;
-  color: var(--secondary-gold);
-  margin-top: auto;
-}
-</style>
+    .about-box p {
+      font-size: 17px;
+      line-height: 1.8;
+      text-align: justify;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+
+    .about-box p:last-child {
+      margin-bottom: 0;
+      font-weight: 600;
+      font-size: 18px;
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid rgba(255, 215, 0, 0.5);
+    }
+
+    /* =====================================
+       FOOTER (KONSISTEN)
+    ===================================== */
+    footer {
+      margin-top: auto;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      padding: 30px 40px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 -4px 12px rgba(123, 44, 191, 0.3);
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary-gold);
+      margin-bottom: 12px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .footer-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+    }
+
+    /* =====================================
+       RESPONSIVE DESIGN
+    ===================================== */
+    @media (max-width: 1024px) {
+      header {
+        padding: 16px 24px;
+      }
+
+      nav {
+        gap: 20px;
+      }
+
+      nav a {
+        font-size: 14px;
+      }
+
+      .about-banner {
+        min-height: 450px;
+        padding: 50px 20px;
+      }
+
+      .about-box {
+        width: 90%;
+        padding: 40px;
+      }
+
+      .about-box h2 {
+        font-size: 30px;
+      }
+
+      .about-box p {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        min-height: auto;
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .logo-container {
+        min-width: auto;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+
+      .about-banner {
+        min-height: 400px;
+        padding: 30px 16px;
+      }
+
+      .about-box {
+        width: 95%;
+        padding: 30px 25px;
+        border-width: 3px;
+      }
+
+      .about-box h2 {
+        font-size: 26px;
+        margin-bottom: 20px;
+      }
+
+      .about-box p {
+        font-size: 15px;
+        line-height: 1.7;
+        text-align: left;
+      }
+
+      .about-box p:last-child {
+        font-size: 16px;
+        margin-top: 20px;
+        padding-top: 15px;
+      }
+
+      footer {
+        padding: 24px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .about-box {
+        padding: 25px 20px;
+      }
+
+      .about-box h2 {
+        font-size: 22px;
+      }
+
+      .about-box p {
+        font-size: 14px;
+      }
+    }
+
+  </style>
 
 </head>
 <body>
 
-<!-- =========================================
-     HEADER
-========================================= -->
 <header>
   <div class="logo-container">
     <img src="gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
     <h1>Zarali's Catering</h1>
   </div>
 
-  <div class="nav-container">
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="menu.html">Menu</a>
-      <a href="users/testi.html">Testimoni</a>
-      <a href="users/pesanan.html">Pesanan saya</a>
-      <a href="users/contact.html">Hubungi kami</a>
-      <a href="about.html" class="active">Tentang kami</a>
-      <a href="../login.html">Login</a>
-    </nav>
-  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="users/testi.html">Testimoni</a>
+    <a href="users/pesanan.html">Pesanan saya</a>
+    <a href="users/contact.html">Hubungi kami</a>
+    <a href="about.html" class="active">Tentang kami</a>
+    <a href="login.html">Login</a>
+  </nav>
 </header>
 
-<!-- =========================================
-     BANNER + KOTAK UNGU
-========================================= -->
 <div class="about-banner">
-
   <div class="about-box">
     <h2>Tentang Kami</h2>
 
     <p>
       Zaralis Catering adalah usaha catering rumahan milik Pak Sanuri yang berfokus pada penyediaan hidangan lezat, higienis, dan terjangkau untuk berbagai acara seperti pesta pernikahan, pengajian, kondangan, dan masih banyak lagi. Kami menyediakan 3 kategori yang dapat anda pilih sesuai dengan kebutuhan anda yang dimulai dari paket besar, kue satuan, dan minuman.
-      Dengan pengalaman dalam menyajikan makanan rumahan yang bercita rasa tinggi, Zaralis Catering berkomitmen memberikan pelayanan terbaik kepada setiap pelanggan.
     </p>
 
-    <br>
+    <p>
+      Dengan pengalaman dalam menyajikan makanan rumahan yang bercita rasa tinggi, Zaralis Catering berkomitmen memberikan pelayanan terbaik kepada setiap pelanggan.
+    </p>
 
     <p>
       Kami selalu mengutamakan kualitas bahan, rasa, dan kepuasan pelanggan dalam setiap pesanan yang kami layani.
     </p>
   </div>
-
 </div>
 
-<!-- =========================================
-     FOOTER
-========================================= -->
 <footer>
-  <b>Kelompok 5 - Zarali's Catering</b>
+  <div class="footer-content">
+    <div class="footer-brand">Zarali's Catering</div>
+    <div class="footer-text">
+      Kelompok 5 | Melayani dengan Hati untuk Setiap Acara Anda<br>
+      © 2024 Zarali's Catering. All Rights Reserved.
+    </div>
+  </div>
 </footer>
 
 </body>

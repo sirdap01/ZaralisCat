@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Testimoni – Zarali's Catering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -29,42 +30,53 @@
     }
 
     /* =====================================
-       HEADER – konsisten global
+       HEADER (IMPROVED CONSISTENCY)
     ===================================== */
     header {
-      background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
       color: white;
-      padding: 12px 24px;
+      padding: 16px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 80px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      min-height: 85px;
+      box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       min-width: 280px;
     }
 
     .logo {
-      max-height: 50px;
+      max-height: 55px;
       border-radius: 50%;
+      border: 3px solid var(--secondary-gold);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
     }
 
     header h1 {
       font-weight: 700;
-      font-size: 1.8rem;
+      font-size: 1.9rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
     }
 
     nav {
       display: flex;
       align-items: center;
-      gap: 25px;
-      white-space: nowrap;
+      gap: 30px;
     }
 
     nav a {
@@ -72,44 +84,287 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 15px;
-      transition: 0.2s;
+      transition: all 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 6px;
+      position: relative;
     }
 
     nav a:hover {
       color: var(--secondary-gold);
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
     }
 
     nav a.active {
+      background-color: rgba(255, 215, 0, 0.2);
       color: var(--secondary-gold);
     }
 
     /* =====================================
-       BANNER
+       BANNER (ENHANCED)
     ===================================== */
     .banner {
       background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
-      height: 220px;
+      min-height: 320px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: var(--secondary-gold);
-      font-size: 32px;
+      color: white;
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 215, 0, 0.1), transparent 50%);
+      pointer-events: none;
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .banner h2 {
+      font-size: 2.8rem;
       font-weight: 700;
-      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
-      margin-bottom: 40px;
+      color: var(--secondary-gold);
+      text-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .banner p {
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 30px;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* =====================================
-       FOOTER
+       SECTION TITLE (IMPROVED)
+    ===================================== */
+    .section-header {
+      text-align: center;
+      margin: 0;
+      color: white;
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      padding: 24px 20px;
+      box-shadow: 0 5px 20px rgba(123, 44, 191, 0.3);
+      letter-spacing: 1.5px;
+      position: relative;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background-color: var(--secondary-gold);
+      border-radius: 2px;
+    }
+
+    /* =====================================
+       CONTENT AREA (NEW)
+    ===================================== */
+    .content-wrapper {
+      padding: 60px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+      animation: bounce 2s infinite;
+    }
+
+    .empty-state h3 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      color: #666;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* =====================================
+       FOOTER (ENHANCED)
     ===================================== */
     footer {
-      background-color: var(--primary-purple);
-      text-align: center;
-      padding: 15px;
-      font-size: 14px;
-      color: var(--secondary-gold);
       margin-top: auto;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      padding: 30px 40px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 -4px 12px rgba(123, 44, 191, 0.3);
     }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary-gold);
+      margin-bottom: 12px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .footer-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+    }
+
+    /* =====================================
+       RESPONSIVE DESIGN
+    ===================================== */
+    @media (max-width: 1024px) {
+      header {
+        padding: 16px 24px;
+      }
+
+      nav {
+        gap: 20px;
+      }
+
+      nav a {
+        font-size: 14px;
+      }
+
+      .banner h2 {
+        font-size: 2.2rem;
+      }
+
+      .content-wrapper {
+        padding: 40px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        min-height: auto;
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .logo-container {
+        min-width: auto;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+
+      .banner {
+        min-height: 280px;
+        padding: 30px 16px;
+      }
+
+      .banner h2 {
+        font-size: 1.8rem;
+      }
+
+      .banner p {
+        font-size: 1rem;
+      }
+
+      .section-header {
+        font-size: 24px;
+        padding: 20px 16px;
+      }
+
+      .content-wrapper {
+        padding: 30px 16px;
+      }
+
+      footer {
+        padding: 24px 16px;
+      }
+    }
+
   </style>
 </head>
 
@@ -133,11 +388,30 @@
 </header>
 
 <div class="banner">
-  Testimoni Pelanggan
+  <div class="banner-content">
+    <h2>Testimoni Pelanggan</h2>
+    <p>Dengarkan cerita kepuasan pelanggan kami</p>
+  </div>
+</div>
+
+<h2 class="section-header">APA KATA MEREKA</h2>
+
+<div class="content-wrapper">
+  <div class="empty-state">
+    <div class="empty-icon">💬</div>
+    <h3>Testimoni Segera Hadir</h3>
+    <p>Kami sedang mengumpulkan testimoni dari pelanggan setia kami. Silakan kembali lagi nanti untuk melihat pengalaman mereka!</p>
+  </div>
 </div>
 
 <footer>
-  <b>Kelompok 5 - Zarali's Catering</b>
+  <div class="footer-content">
+    <div class="footer-brand">Zarali's Catering</div>
+    <div class="footer-text">
+      Kelompok 5 | Melayani dengan Hati untuk Setiap Acara Anda<br>
+      © 2024 Zarali's Catering. All Rights Reserved.
+    </div>
+  </div>
 </footer>
 
 </body>

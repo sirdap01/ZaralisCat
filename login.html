@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Menu - Zarali's Catering</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – Zarali's Catering</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -30,7 +30,7 @@
     }
 
     /* =====================================
-       HEADER (KONSISTEN)
+       HEADER (IMPROVED CONSISTENCY)
     ===================================== */
     header {
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
@@ -102,11 +102,11 @@
     }
 
     /* =====================================
-       BANNER (KONSISTEN)
+       BANNER (ENHANCED)
     ===================================== */
     .banner {
       background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
-      min-height: 320px;
+      min-height: 280px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -176,126 +176,194 @@
     }
 
     /* =====================================
-       KATEGORI SECTION
+       LOGIN FORM SECTION
     ===================================== */
-    .kategori {
-      display: flex;
-      flex-direction: column;
-      gap: 35px;
+    .content-wrapper {
       padding: 60px 40px;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       width: 100%;
-    }
-
-    .card {
-      display: flex;
-      align-items: center;
-      background-color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-      overflow: hidden;
-      transition: all 0.4s ease;
-      cursor: pointer;
-      height: 240px;
-      text-decoration: none;
-      border: 3px solid transparent;
-      position: relative;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.05), transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
-    }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(123, 44, 191, 0.25);
-      border-color: var(--accent-purple);
-    }
-
-    .card-image-container {
-      width: 340px;
-      height: 240px;
-      overflow: hidden;
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .card-image-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1));
-      pointer-events: none;
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .card:hover img {
-      transform: scale(1.1);
-    }
-
-    .card-content {
       flex: 1;
-      padding: 30px 40px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .card h3 {
-      font-size: 32px;
-      color: var(--primary-purple);
-      font-weight: 700;
-      text-align: center;
-      transition: all 0.3s ease;
-      position: relative;
-      display: inline-block;
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(123, 44, 191, 0.15);
+      padding: 50px 45px;
+      max-width: 480px;
+      width: 100%;
+      animation: slideUp 0.6s ease;
     }
 
-    .card h3::after {
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .login-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .login-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-bottom: 8px;
+    }
+
+    .login-header p {
+      font-size: 15px;
+      color: #666;
+      font-weight: 400;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 15px;
+      border: 2px solid #E0E0E0;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      background-color: #FAFAFA;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary-purple);
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #AAAAAA;
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-bottom: 25px;
+    }
+
+    .forgot-password a {
+      color: var(--primary-purple);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-password a:hover {
+      color: var(--accent-purple);
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(123, 44, 191, 0.3);
+      margin-bottom: 20px;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .divider::before {
       content: '';
       position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%) scaleX(0);
-      width: 80%;
-      height: 3px;
-      background-color: var(--secondary-gold);
-      transition: transform 0.3s ease;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background-color: #E0E0E0;
     }
 
-    .card:hover h3 {
+    .divider span {
+      background-color: white;
+      padding: 0 15px;
+      color: #999;
+      font-size: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .signup-link {
+      text-align: center;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .signup-link a {
+      color: var(--primary-purple);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .signup-link a:hover {
       color: var(--accent-purple);
-    }
-
-    .card:hover h3::after {
-      transform: translateX(-50%) scaleX(1);
+      text-decoration: underline;
     }
 
     /* =====================================
-       FOOTER (KONSISTEN)
+       FOOTER (ENHANCED)
     ===================================== */
     footer {
       margin-top: auto;
@@ -346,21 +414,12 @@
         font-size: 2.2rem;
       }
 
-      .kategori {
+      .content-wrapper {
         padding: 40px 24px;
       }
 
-      .card {
-        height: 200px;
-      }
-
-      .card-image-container {
-        width: 280px;
-        height: 200px;
-      }
-
-      .card h3 {
-        font-size: 26px;
+      .login-container {
+        padding: 40px 35px;
       }
     }
 
@@ -392,7 +451,7 @@
       }
 
       .banner {
-        min-height: 280px;
+        min-height: 240px;
         padding: 30px 16px;
       }
 
@@ -404,31 +463,38 @@
         font-size: 1rem;
       }
 
-      .kategori {
+      .content-wrapper {
         padding: 30px 16px;
-        gap: 25px;
       }
 
-      .card {
-        flex-direction: column;
-        height: auto;
+      .login-container {
+        padding: 35px 25px;
       }
 
-      .card-image-container {
-        width: 100%;
-        height: 200px;
-      }
-
-      .card-content {
-        padding: 25px 20px;
-      }
-
-      .card h3 {
+      .login-header h2 {
         font-size: 24px;
+      }
+
+      .login-icon {
+        font-size: 50px;
       }
 
       footer {
         padding: 24px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+
+      .form-group input {
+        padding: 12px 15px;
+      }
+
+      .btn-login {
+        padding: 13px;
       }
     }
 
@@ -445,50 +511,69 @@
 
   <nav>
     <a href="index.html">Home</a>
-    <a href="menu.html" class="active">Menu</a>
+    <a href="menu.html">Menu</a>
     <a href="users/testi.html">Testimoni</a>
     <a href="users/pesanan.html">Pesanan saya</a>
     <a href="users/contact.html">Hubungi kami</a>
     <a href="about.html">Tentang kami</a>
-    <a href="login.html">Login</a>
+    <a href="login.html" class="active">Login</a>
   </nav>
 </header>
 
 <div class="banner">
   <div class="banner-content">
-    <h2>Pilih Menu Favorit Anda</h2>
-    <p>👇 Pilih menu berdasarkan kategori di bawah 👇</p>
+    <h2>Selamat Datang</h2>
+    <p>Masuk untuk mengakses akun Anda</p>
   </div>
 </div>
 
-<section class="kategori">
-  <a href="#" class="card">
-    <div class="card-image-container">
-      <img src="gambar/paket_besar.jpg" alt="Paket Besar">
+<div class="content-wrapper">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-icon">🔐</div>
+      <h2>Login</h2>
+      <p>Masukkan email dan password Anda</p>
     </div>
-    <div class="card-content">
-      <h3>Paket Besar</h3>
-    </div>
-  </a>
 
-  <a href="#" class="card">
-    <div class="card-image-container">
-      <img src="gambar/kue_satuan.jpg" alt="Kue Satuan">
-    </div>
-    <div class="card-content">
-      <h3>Kue Satuan</h3>
-    </div>
-  </a>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="contoh@email.com" 
+          required
+        >
+      </div>
 
-  <a href="#" class="card">
-    <div class="card-image-container">
-      <img src="gambar/minuman.jpg" alt="Minuman">
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          placeholder="Masukkan password Anda" 
+          required
+        >
+      </div>
+
+      <div class="forgot-password">
+        <a href="#">Lupa password?</a>
+      </div>
+
+      <button type="submit" class="btn-login">Masuk</button>
+    </form>
+
+    <div class="divider">
+      <span>atau</span>
     </div>
-    <div class="card-content">
-      <h3>Minuman</h3>
+
+    <div class="signup-link">
+      Belum punya akun? <a href="#">Daftar sekarang</a>
     </div>
-  </a>
-</section>
+  </div>
+</div>
 
 <footer>
   <div class="footer-content">
@@ -499,6 +584,26 @@
     </div>
   </div>
 </footer>
+
+<script>
+  // Handle form submission
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    // Simple validation
+    if (email && password) {
+      alert('Login berhasil! Selamat datang di Zarali\'s Catering.');
+      // Here you can add actual login logic
+      // For now, redirect to home page
+      window.location.href = 'index.html';
+    } else {
+      alert('Mohon lengkapi semua field!');
+    }
+  });
+</script>
 
 </body>
 </html>

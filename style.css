@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  display: flex;
+  background-color: #fff;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 160px;
+  background-color: #8A2BE2;
+  height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+  position: fixed;
+}
+
+.sidebar .logo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sidebar img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: white;
+  object-fit: cover;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.menu a {
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  transition: 0.3s;
+  font-size: 13px;
+}
+
+.menu a:hover, .menu a.active {
+  background-color: #f7dc11;
+  color: black;
+}
+
+.logout {
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
+.logout a {
+  color: red;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* Konten utama */
+.main-content {
+  margin-left: 180px;
+  padding: 30px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.header .admin-btn {
+  background-color: yellow;
+  border: none;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.btn {
+  background-color: #8A2BE2;
+  color: white;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.btn:hover {
+  background-color: #6f1cb8;
+}
+
+.table-box {
+  background-color: #FFE500;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 25px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+th {
+  text-align: left;
+}
