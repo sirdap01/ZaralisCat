@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Testimoni – Zarali's Catering</title>
+
+  <style>
+    :root {
+      --primary-purple: #7B2CBF;
+      --secondary-gold: #FFD700;
+      --accent-purple: #9D4EDD;
+      --text-dark: #222;
+      --background-light: #FFFDF8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =====================================
+       HEADER – konsisten global
+    ===================================== */
+    header {
+      background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 280px;
+    }
+
+    .logo {
+      max-height: 50px;
+      border-radius: 50%;
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      white-space: nowrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--secondary-gold);
+    }
+
+    nav a.active {
+      color: var(--secondary-gold);
+    }
+
+    /* =====================================
+       BANNER
+    ===================================== */
+    .banner {
+      background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary-gold);
+      font-size: 32px;
+      font-weight: 700;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      margin-bottom: 40px;
+    }
+
+    /* =====================================
+       FOOTER
+    ===================================== */
+    footer {
+      background-color: var(--primary-purple);
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: var(--secondary-gold);
+      margin-top: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="../gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
+    <h1>Zarali's Catering</h1>
+  </div>
+
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="../menu.html">Menu</a>
+    <a href="testi.html" class="active">Testimoni</a>
+    <a href="pesanan.html">Pesanan saya</a>
+    <a href="contact.html">Hubungi kami</a>
+    <a href="../about.html">Tentang kami</a>
+    <a href="../login.html">Login</a>
+  </nav>
+</header>
+
+<div class="banner">
+  Testimoni Pelanggan
+</div>
+
+<footer>
+  <b>Kelompok 5 - Zarali's Catering</b>
+</footer>
+
+</body>
+</html>

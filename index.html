@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zarali's Catering</title>
+
+  <style>
+    :root {
+      --primary-purple: #7B2CBF;
+      --secondary-gold: #FFD700;
+      --accent-purple: #9D4EDD;
+      --text-dark: #222;
+      --background-light: #FFFDF8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =====================================
+       HEADER (GLOBAL CONSISTENCY)
+    ===================================== */
+    header {
+      background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 280px;
+    }
+
+    .logo {
+      max-height: 50px;
+      border-radius: 50%;
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--secondary-gold);
+    }
+
+    /* =====================================
+       BANNER
+    ===================================== */
+    .banner {
+      background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary-gold);
+      font-size: 34px;
+      font-weight: bold;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    }
+
+    /* =====================================
+       SECTION TITLE
+    ===================================== */
+    h2 {
+      text-align: center;
+      margin: 0;
+      color: white;
+      font-size: 28px;
+      background-color: var(--primary-purple);
+      padding: 18px 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      letter-spacing: 1px;
+    }
+
+    /* =====================================
+       FOOTER
+    ===================================== */
+    footer {
+      margin-top: auto;
+      background-color: var(--primary-purple);
+      padding: 15px;
+      text-align: center;
+      color: var(--secondary-gold);
+      font-size: 14px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
+    <h1>Zarali's Catering</h1>
+  </div>
+
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="users/testi.html">Testimoni</a>
+    <a href="users/pesanan.html">Pesanan saya</a>
+    <a href="users/contact.html">Hubungi kami</a>
+    <a href="about.html">Tentang kami</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<div class="banner">
+  Selamat Datang di Zarali's Catering!
+</div>
+
+<h2>SEMUA PRODUK</h2>
+
+<footer>
+  <b>Kelompok 5 - Zarali's Catering</b>
+</footer>
+
+</body>
+</html>
