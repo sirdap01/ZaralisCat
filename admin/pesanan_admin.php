@@ -1,341 +1,253 @@
 <?php
-// PHP Sederhana: Contoh data pesanan yang seharusnya diambil dari database
-$orders = [
-    ['no' => 12, 'nama' => 'Ian', 'harga' => 'Rp45,000', 'status' => 'Lunas', 'metode' => 'Debit', 'tanggal' => '2090-09-01'],
-    ['no' => 13, 'nama' => 'Kiki', 'harga' => 'Rp95,000', 'status' => 'Lunas', 'metode' => 'Tunai', 'tanggal' => '2090-09-01'],
-    ['no' => 14, 'nama' => 'Kipli', 'harga' => 'Rp201,000', 'status' => 'Lunas', 'metode' => 'Debit', 'tanggal' => '2090-09-01'],
-    ['no' => 15, 'nama' => 'Jahroni', 'harga' => 'Rp405,000', 'status' => 'Lunas', 'metode' => 'Tunai', 'tanggal' => '2029-09-01'],
-    ['no' => 16, 'nama' => 'Ahman', 'harga' => 'Rp40,000', 'status' => 'Lunas', 'metode' => 'Tunai', 'tanggal' => '2090-09-01'],
-    ['no' => 17, 'nama' => 'Putra', 'harga' => 'Rp70,000', 'status' => 'Lunas', 'metode' => 'Tunai', 'tanggal' => '2090-09-01'],
-];
+include 'koneksi.php';
 
-// Untuk tanggal hari ini
-$today = '28 Okt 2023'; // Karena di gambar tertulis 28 Okt 2023
+/* =========================
+   FILTER & QUERY PESANAN
+========================= */
+$where = [];
+
+if (!empty($_GET['cari'])) {
+    $cari = mysqli_real_escape_string($conn, $_GET['cari']);
+    $where[] = "nama_pelanggan LIKE '%$cari%'";
+}
+
+if (!empty($_GET['tanggal'])) {
+    $tgl = mysqli_real_escape_string($conn, $_GET['tanggal']);
+    $where[] = "tanggal='$tgl'";
+}
+
+$sql = "SELECT * FROM pesanan";
+
+if (!empty($where)) {
+    $sql .= " WHERE " . implode(" AND ", $where);
+}
+
+$sql .= " ORDER BY id DESC";
+
+$pesanan = mysqli_query($conn, $sql);
+
+if (!$pesanan) {
+    die("Query Error : " . mysqli_error($conn));
+}
+
+$today = date('d M Y');
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pesanan - Zarali's Catering</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
+<meta charset="UTF-8">
+<title>Manajemen Pesanan - Zarali’s Catering</title>
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
 
-        /* --- Sidebar (Bagian Ungu) --- */
-        .sidebar {
-            width: 250px;
-            background-color: #6a0dad; /* Warna Ungu */
-            color: white;
-            padding: 20px 0;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-        }
+.sidebar {
+    width: 200px;
+    background: #6a0dad;
+    color: white;
+    height: 100vh;
+    position: fixed;
+}
 
-        .logo-area {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 0 20px;
-        }
+.sidebar h3 {
+    text-align: center;
+}
 
-        .logo-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-bottom: 5px;
-            border: 3px solid white;
-        }
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+}
 
-        .logo-text {
-            display: block;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
+.sidebar a.active,
+.sidebar a:hover {
+    background: #8a2be2;
+}
 
-        .nav-menu ul {
-            list-style: none;
-            padding: 0;
-        }
+.main-content {
+    margin-left: 220px;
+    padding: 20px;
+}
 
-        .nav-menu li a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin: 5px 0;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
+.header {
+    background: #FFE500;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
 
-        .nav-menu li a:hover {
-            background-color: #8a2be2;
-        }
+.controls {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
 
-        .nav-menu li.active {
-            background-color: #8a2be2;
-            margin: 5px 0;
-            padding: 0;
-            border-left: 5px solid yellow;
-        }
+.controls input,
+.controls button {
+    padding: 8px;
+}
 
-        .nav-menu li.active a {
-            font-weight: bold;
-        }
+.table-box {
+    background: #fff066;
+    padding: 20px;
+    border-radius: 10px;
+}
 
-        .logout-area {
-            margin-top: auto;
-            padding: 20px;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        .logout-btn {
-            display: block;
-            text-align: center;
-            background-color: #ff0000;
-            color: white;
-            padding: 10px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ffcc00;
+}
 
-        /* --- Konten Utama --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 20px 40px;
-        }
+th {
+    background: #ffe840;
+}
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+td {
+    background: #fff8b3;
+}
 
-        .header h1 {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #333;
-        }
+.aksi {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+}
 
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
+.btn-aksi {
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
 
-        .date-info {
-            margin-right: 15px;
-            font-size: 0.9em;
-            color: #555;
-        }
 
-        .admin-btn {
-            background-color: #ffd700;
-            color: black;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.btn-edit {
+    background: #0d6efd;
+}
 
-        /* --- Area Kontrol (Filter dan Tombol Tambah) --- */
-        .controls-top, .controls-date {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+.btn-detail {
+    background: #00C853;
+}
 
-        .search-input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 250px;
-            margin-right: 15px;
-        }
+.btn-cetak {
+    background: #6f42c1;
+}
 
-        .tambah-pesanan-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.btn-tambah {
+    background: #4CAF50;
+    padding: 8px 14px;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
 
-        .controls-date label {
-            margin-right: 10px;
-        }
-        
-        .controls-date .date-input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 120px; /* Diperkecil sedikit */
-            margin: 0 10px;
-            background-color: #ffd700; /* Latar belakang kuning di input tanggal */
-            text-align: center;
-            font-weight: bold;
-        }
+}
 
-        .controls-date .tampilkan-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* --- Tabel Pesanan (Background Kuning Besar) --- */
-        .order-table-container {
-            background-color: #fff066; /* Kuning Terang */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            overflow-x: auto;
-        }
-
-        .order-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .order-table th, .order-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ffcc00;
-        }
-
-        .order-table th {
-            background-color: #ffe840;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .order-table td {
-            background-color: #fff8b3;
-        }
-        
-        .order-table tbody tr:nth-child(even) td {
-            /* Sedikit variasi warna pada baris genap jika diperlukan,
-               tapi di gambar tidak terlalu terlihat perbedaannya */
-            background-color: #fffaf0; 
-        }
-
-        /* Tombol Aksi */
-        .action-btn {
-            text-decoration: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.9em;
-            margin-right: 5px;
-            display: inline-block;
-            cursor: pointer;
-            border: none;
-        }
-
-        .detail-btn {
-            background-color: #00bfff; /* Biru muda/Cyan untuk Detail */
-        }
-
-        .cetak-btn {
-            background-color: #007bff; /* Biru untuk Cetak */
-        }
-    </style>
+.empty {
+    text-align: center;
+    padding: 20px;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="logo-area">
-                <img src="logo.png" alt="Zarali's Catering Logo" class="logo-img">
-                <span class="logo-text">Zarali's Catering</span>
-            </div>
-            <nav class="nav-menu">
-                <ul>
-                    <li><a href="dashboard_admin.php">Dashboard</a></li>
-                    <li><a href="#produk_admin.php">Produk</a></li>
-                    <li class="active"><a href="pesanan_admin.php">Pesanan</a></li>
-                    <li><a href="riwayat_transaksi_admin.php">Transaksi</a></li>
-                    <li><a href="#">Laporan Penjualan</a></li>
-                    <li><a href="laporan_penjualan_admin.php">Laporan Penjualan</a>
-                    <li><a href="logout_admin.php">Logout</a>
-                </ul>
-            </nav>
-            <div class="logout-area">
-                <a href="#" class="logout-btn">Logout</a>
-            </div>
-        </div>
 
-        <div class="main-content">
-            <header class="header">
-                <h1>Daftar Pesanan</h1>
-                <div class="header-right">
-                    <span class="date-info">Hari ini : <?php echo $today; ?></span>
-                    <button class="admin-btn">Admin</button>
-                </div>
-            </header>
+<div class="sidebar">
+    <h3>Zarali's Catering</h3>
+    <a href="dashboard_admin.php">Dashboard</a>
+    <a href="produk_admin.php">Produk</a>
+    <a href="pesanan_admin.php" class="active">Pesanan</a>
+    <a href="riwayat_transaksi_admin.php">Transaksi</a>
+    <a href="laporan_penjualan_admin.php">Laporan</a>
+    <a href="logout_admin.php">Logout</a>
+</div>
 
-            <div class="controls-top">
-                <input type="text" placeholder="Cari nama pelanggan..." class="search-input">
-                <button class="tambah-pesanan-btn">+ Tambahkan Pesanan</button>
-            </div>
+<div class="main-content">
 
-            <div class="controls-date">
-                <label for="tanggal">Tanggal :</label>
-                <input type="text" id="tanggal" value="09/01/2025" class="date-input">
-                <span style="font-size: 1.5em; cursor: pointer; margin-right: 15px;">🗓️</span> 
-                <button class="tampilkan-btn">Tampilkan</button>
-            </div>
-
-            <div class="order-table-container">
-                <table class="order-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Pelanggan</th>
-                            <th>Total Harga</th>
-                            <th>Status</th>
-                            <th>Metode Pembayaran</th>
-                            <th>Tanggal</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        // Loop PHP untuk menampilkan data
-                        foreach ($orders as $order): 
-                        ?>
-                        <tr>
-                            <td><?php echo $order['no']; ?></td>
-                            <td><?php echo $order['nama']; ?></td>
-                            <td><?php echo $order['harga']; ?></td>
-                            <td><?php echo $order['status']; ?></td>
-                            <td><?php echo $order['metode']; ?></td>
-                            <td><?php echo $order['tanggal']; ?></td>
-                            <td>
-                                <button class="action-btn detail-btn">Detail</button>
-                                <button class="action-btn cetak-btn">Cetak</button>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="header">
+        <h2>Daftar Pesanan</h2>
+        <span>Hari ini : <?= $today ?></span>
     </div>
+
+    <form method="GET" class="controls">
+    <input type="text" name="cari" placeholder="Cari pelanggan..."
+           value="<?= $_GET['cari'] ?? '' ?>">
+
+    <input type="date" name="tanggal"
+           value="<?= $_GET['tanggal'] ?? '' ?>">
+
+    <button type="submit">Tampilkan</button>
+
+    <!-- TOMBOL TAMBAH PESANAN -->
+    <a href="tambah_pesanan.php" class="btn btn-tambah">
+        + Tambah Pesanan
+    </a>
+</form>
+
+
+    <div class="table-box">
+       <table border="1" width="100%">
+<tr>
+    <th>No</th>
+    <th>Tanggal</th>
+    <th>Pelanggan</th>
+    <th>Metode Pembayaran</th>
+    <th>Total</th>
+    <th>Status</th>
+    <th>Aksi</th>
+</tr>
+
+<?php $no=1; while($p = mysqli_fetch_assoc($pesanan)): ?>
+<tr>
+    <td><?= $no++ ?></td>
+    <td><?= $p['tanggal'] ?></td>
+    <td><?= $p['nama_pelanggan'] ?></td>
+    <td><?= $p['metode_pembayaran'] ?></td>
+    <td>Rp <?= number_format($p['total_harga'],0,',','.') ?></td>
+    <td><?= $p['status'] ?>
+    <td class="aksi">
+
+    <a href="edit_status_pesanan.php?id=<?= $p['id'] ?>"
+       class="btn-aksi btn-edit">
+       Edit
+    </a>
+
+    <a href="detail_pesanan_admin.php?id=<?= $p['id'] ?>"
+       class="btn-aksi btn-detail">
+       Detail
+    </a>
+
+    <a href="cetak_invoice.php?id=<?= $p['id'] ?>"
+       class="btn-aksi btn-cetak"
+       target="_blank">
+       Cetak
+    </a>
+
+</td>
+
+</tr>
+<?php endwhile; ?>
+</table>
+
+    </div>
+
+</div>
+
 </body>
 </html>

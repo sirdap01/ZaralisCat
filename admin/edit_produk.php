@@ -1,41 +1,51 @@
 <?php
 include 'koneksi.php';
 
-$id = $_GET['id'];
+$id = (int) $_GET['id'];
 $data = mysqli_query($conn, "SELECT * FROM produk WHERE id=$id");
+
+if (mysqli_num_rows($data) == 0) {
+    die("Data tidak ditemukan");
+}
+
 $p = mysqli_fetch_assoc($data);
 
-// UPDATE PRODUK
+/* ======================
+   UPDATE PRODUK
+====================== */
 if (isset($_POST['update'])) {
-    $nama = $_POST['nama'];
-    $deskripsi = $_POST['deskripsi'];
-    $harga = $_POST['harga'];
-    $kategori = $_POST['kategori'];
 
-    // Jika gambar baru diupload
-    if ($_FILES['gambar']['name'] != "") {
+    $nama      = mysqli_real_escape_string($conn, $_POST['nama']);
+    $deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $harga     = (int) $_POST['harga'];
+    $kategori  = mysqli_real_escape_string($conn, $_POST['kategori']);
+
+    if (!empty($_FILES['gambar']['name'])) {
         $gambar = $_FILES['gambar']['name'];
-        $tmp = $_FILES['gambar']['tmp_name'];
+        $tmp    = $_FILES['gambar']['tmp_name'];
         move_uploaded_file($tmp, "uploads/" . $gambar);
     } else {
-        $gambar = $p['gambar']; // pakai gambar lama
+        $gambar = $p['gambar'];
     }
 
-    mysqli_query($conn, "UPDATE produk SET 
-        nama='$nama', 
-        deskripsi='$deskripsi', 
-        harga='$harga', 
-        kategori='$kategori', 
+    mysqli_query($conn, "UPDATE produk SET
+        nama='$nama',
+        deskripsi='$deskripsi',
+        harga='$harga',
+        kategori='$kategori',
         gambar='$gambar'
-    WHERE id=$id");
+        WHERE id=$id
+    ");
 
-    header("Location: produk.php?success=edit");
+    header("Location: produk_admin.php?status=update");
+    exit;
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+<meta charset="UTF-8">
 <title>Edit Produk</title>
 
 <style>
@@ -59,9 +69,14 @@ h2 {
 
 label {
     font-weight: bold;
+    display:block;
+    margin-top:12px;
 }
 
-input[type=text], input[type=number], textarea, select {
+input[type=text],
+input[type=number],
+textarea,
+select {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
@@ -83,34 +98,34 @@ input[type=text], input[type=number], textarea, select {
 <body>
 
 <div class="container">
-    <h2>EDIT PRODUK</h2>
+<h2>EDIT PRODUK</h2>
 
-    <form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data">
 
-        <label>Nama</label>
-        <input type="text" name="nama" value="<?= $p['nama'] ?>" required>
+    <label>Nama</label>
+    <input type="text" name="nama" value="<?= $p['nama'] ?>" required>
 
-        <label>Deskripsi</label>
-        <textarea name="deskripsi" required><?= $p['deskripsi'] ?></textarea>
+    <label>Deskripsi</label>
+    <textarea name="deskripsi" required><?= $p['deskripsi'] ?></textarea>
 
-        <label>Harga</label>
-        <input type="number" name="harga" value="<?= $p['harga'] ?>" required>
+    <label>Harga</label>
+    <input type="number" name="harga" value="<?= $p['harga'] ?>" required>
 
-        <label>Kategori</label>
-        <select name="kategori">
-            <option <?= $p['kategori']=='Minuman'?'selected':'' ?>>Minuman</option>
-            <option <?= $p['kategori']=='Makanan'?'selected':'' ?>>Makanan</option>
-            <option <?= $p['kategori']=='Snack'?'selected':'' ?>>Snack</option>
-        </select>
+    <label>Kategori</label>
+    <select name="kategori">
+        <option value="Minuman" <?= $p['kategori']=='Minuman'?'selected':'' ?>>Minuman</option>
+        <option value="Makanan" <?= $p['kategori']=='Makanan'?'selected':'' ?>>Makanan</option>
+        <option value="Snack" <?= $p['kategori']=='Snack'?'selected':'' ?>>Snack</option>
+    </select>
 
-        <label>Gambar</label>
-        <input type="file" name="gambar" accept="image/*">
+    <label>Gambar</label>
+    <input type="file" name="gambar" accept="image/*">
 
-        <p>Gambar sekarang:</p>
-        <img src="uploads/<?= $p['gambar'] ?>" width="150">
+    <p>Gambar sekarang:</p>
+    <img src="uploads/<?= $p['gambar'] ?>" width="150">
 
-        <button id="btnUpdate" name="update">Update</button>
-    </form>
+    <button id="btnUpdate" name="update">Update</button>
+</form>
 </div>
 
 </body>
