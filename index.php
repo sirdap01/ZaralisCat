@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zarali's Catering</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home - Zarali's Catering</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -30,7 +30,7 @@
     }
 
     /* =====================================
-       HEADER (IMPROVED CONSISTENCY)
+       HEADER (KONSISTEN)
     ===================================== */
     header {
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
@@ -68,7 +68,7 @@
 
     header h1 {
       font-weight: 700;
-      font-size: 1.9rem;
+      font-size: 1.2rem;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
       letter-spacing: 0.5px;
     }
@@ -102,7 +102,7 @@
     }
 
     /* =====================================
-       BANNER (ENHANCED)
+       BANNER (KONSISTEN)
     ===================================== */
     .banner {
       background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
@@ -150,28 +150,7 @@
       font-weight: 300;
       color: white;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      margin-bottom: 30px;
       animation: fadeInUp 0.8s ease 0.2s both;
-    }
-
-    .banner-cta {
-      display: inline-block;
-      padding: 14px 35px;
-      background-color: var(--secondary-gold);
-      color: var(--primary-purple);
-      font-weight: 700;
-      font-size: 16px;
-      border-radius: 30px;
-      text-decoration: none;
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-      transition: all 0.3s ease;
-      animation: fadeInUp 0.8s ease 0.4s both;
-    }
-
-    .banner-cta:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
-      background-color: #FFC700;
     }
 
     @keyframes fadeInDown {
@@ -197,85 +176,126 @@
     }
 
     /* =====================================
-       SECTION TITLE (IMPROVED)
+       KATEGORI SECTION
     ===================================== */
-    .section-header {
-      text-align: center;
-      margin: 0;
-      color: white;
-      font-size: 32px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
-      padding: 24px 20px;
-      box-shadow: 0 5px 20px rgba(123, 44, 191, 0.3);
-      letter-spacing: 1.5px;
+    .kategori {
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+      padding: 60px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      height: 240px;
+      text-decoration: none;
+      border: 3px solid transparent;
       position: relative;
     }
 
-    .section-header::after {
+    .card::before {
       content: '';
       position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 4px;
-      background-color: var(--secondary-gold);
-      border-radius: 2px;
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
     }
 
-    /* =====================================
-       CONTENT AREA (NEW)
-    ===================================== */
-    .content-wrapper {
-      padding: 60px 40px;
-      max-width: 1400px;
-      margin: 0 auto;
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(123, 44, 191, 0.25);
+      border-color: var(--accent-purple);
+    }
+
+    .card-image-container {
+      width: 340px;
+      height: 240px;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .card-image-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1));
+      pointer-events: none;
+    }
+
+    .card img {
       width: 100%;
-      flex: 1;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
     }
 
-    .empty-state {
+    .card:hover img {
+      transform: scale(1.1);
+    }
+
+    .card-content {
+      flex: 1;
+      padding: 30px 40px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 400px;
-      text-align: center;
-      padding: 40px 20px;
     }
 
-    .empty-icon {
-      font-size: 80px;
-      margin-bottom: 24px;
-      animation: bounce 2s infinite;
-    }
-
-    .empty-state h3 {
-      font-size: 28px;
-      font-weight: 700;
+    .card h3 {
+      font-size: 32px;
       color: var(--primary-purple);
-      margin-bottom: 12px;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
     }
 
-    .empty-state p {
-      font-size: 16px;
-      color: #666;
-      max-width: 500px;
-      line-height: 1.6;
+    .card h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 80%;
+      height: 3px;
+      background-color: var(--secondary-gold);
+      transition: transform 0.3s ease;
     }
 
-    @keyframes bounce {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
+    .card:hover h3 {
+      color: var(--accent-purple);
+    }
+
+    .card:hover h3::after {
+      transform: translateX(-50%) scaleX(1);
     }
 
     /* =====================================
-       FOOTER (ENHANCED)
+       FOOTER (KONSISTEN)
     ===================================== */
     footer {
       margin-top: auto;
@@ -326,8 +346,21 @@
         font-size: 2.2rem;
       }
 
-      .content-wrapper {
+      .kategori {
         padding: 40px 24px;
+      }
+
+      .card {
+        height: 200px;
+      }
+
+      .card-image-container {
+        width: 280px;
+        height: 200px;
+      }
+
+      .card h3 {
+        font-size: 26px;
       }
     }
 
@@ -371,18 +404,27 @@
         font-size: 1rem;
       }
 
-      .section-header {
-        font-size: 24px;
-        padding: 20px 16px;
-      }
-
-      .content-wrapper {
+      .kategori {
         padding: 30px 16px;
+        gap: 25px;
       }
 
-      .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
+      .card {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .card-image-container {
+        width: 100%;
+        height: 200px;
+      }
+
+      .card-content {
+        padding: 25px 20px;
+      }
+
+      .card h3 {
+        font-size: 24px;
       }
 
       footer {
@@ -402,7 +444,7 @@
   </div>
 
   <nav>
-    <a href="index.html" class="active">Home</a>
+    <a href="index.php" class="active">Home</a>
     <a href="menu.html">Menu</a>
     <a href="users/testi.html">Testimoni</a>
     <a href="users/pesanan.html">Pesanan saya</a>
@@ -414,21 +456,39 @@
 
 <div class="banner">
   <div class="banner-content">
-    <h2>Selamat Datang di Zarali's Catering!</h2>
-    <p>Hidangan Istimewa untuk Setiap Momen Berharga Anda</p>
-    <a href="menu.html" class="banner-cta">Lihat Menu Kami</a>
+    <h2>Selamat Datang di Zarali's Catering</h2>
+    <p>Pilih menu favorit Anda berdasarkan kategori di bawah</p>
   </div>
 </div>
 
-<h2 class="section-header">SEMUA PRODUK</h2>
+<section class="kategori">
+  <a href="menu.php?kategori=paket_besar" class="card">
+    <div class="card-image-container">
+      <img src="gambar/paket_besar.jpg" alt="Paket Besar">
+    </div>
+    <div class="card-content">
+      <h3>Paket Besar</h3>
+    </div>
+  </a>
 
-<div class="content-wrapper">
-  <div class="empty-state">
-    <div class="empty-icon">🍽️</div>
-    <h3>Produk Segera Hadir</h3>
-    <p>Kami sedang mempersiapkan koleksi menu terbaik untuk Anda. Silakan kembali lagi nanti!</p>
-  </div>
-</div>
+  <a href="menu.php?kategori=kue_satuan" class="card">
+    <div class="card-image-container">
+      <img src="gambar/kue_satuan.jpg" alt="Kue Satuan">
+    </div>
+    <div class="card-content">
+      <h3>Kue Satuan</h3>
+    </div>
+  </a>
+
+  <a href="menu.php?kategori=minuman" class="card">
+    <div class="card-image-container">
+      <img src="gambar/minuman.jpg" alt="Minuman">
+    </div>
+    <div class="card-content">
+      <h3>Minuman</h3>
+    </div>
+  </a>
+</section>
 
 <footer>
   <div class="footer-content">

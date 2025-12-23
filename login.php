@@ -70,7 +70,7 @@ if (isset($_POST['login'])) {
       box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: transform 0.3s ease;
     }
     .logo:hover { transform: scale(1.05); }
-    header h1 { font-weight: 700; font-size: 1.9rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); letter-spacing: 0.5px; }
+    header h1 { font-weight: 700; font-size: 1.2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); letter-spacing: 0.5px; }
     nav { display: flex; align-items: center; gap: 30px; }
     nav a {
       color: white; text-decoration: none; font-weight: 600; font-size: 15px;
@@ -148,7 +148,7 @@ if (isset($_POST['login'])) {
     <h1>Zarali's Catering</h1>
   </div>
   <nav>
-    <a href="index.html">Home</a>
+    <a href="index.php">Home</a>
     <a href="menu.html">Menu</a>
     <a href="users/testi.html">Testimoni</a>
     <a href="users/pesanan.html">Pesanan saya</a>
