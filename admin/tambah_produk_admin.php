@@ -12,7 +12,15 @@ if (isset($_POST['tambah'])) {
     $tmp    = $_FILES['gambar']['tmp_name'];
 
     if ($gambar != "") {
-        move_uploaded_file($tmp, "uploads/" . $gambar);
+        // PERBAIKAN: Buat folder jika belum ada
+        $upload_dir = "uploads/produk/";
+
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        move_uploaded_file($tmp, $upload_dir . $gambar);
+
 
         $query = "INSERT INTO produk 
                   (nama, deskripsi, harga, kategori, gambar) 
@@ -23,95 +31,619 @@ if (isset($_POST['tambah'])) {
             header("Location: produk_admin.php");
             exit;
         } else {
-            echo "Gagal menyimpan data!";
+            echo "<script>alert('Gagal menyimpan data!');</script>";
         }
     } else {
-        echo "Gambar wajib diupload!";
+        echo "<script>alert('Gambar wajib diupload!');</script>";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Tambah Produk</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tambah Produk - Zarali's Catering</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
+:root {
+    --primary-purple: #7B2CBF;
+    --secondary-gold: #FFD700;
+    --accent-purple: #9D4EDD;
+    --text-dark: #222;
+    --background-light: #FFFDF8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
 body {
-    background: #eee;
-    font-family: Arial, sans-serif;
+    background-color: var(--background-light);
+    min-height: 100vh;
 }
-.container {
-    width: 380px;
-    background: yellow;
-    margin: 30px auto;
-    padding: 20px 25px;
-    border-radius: 10px;
-    border: 2px solid #444;
+
+/* =====================================
+   SIDEBAR
+===================================== */
+.sidebar {
+    width: 280px;
+    background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+    height: 100vh;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 30px 0;
+    box-shadow: 4px 0 20px rgba(123, 44, 191, 0.2);
+    overflow-y: auto;
+    z-index: 1000;
 }
-h2 {
+
+.sidebar-header {
     text-align: center;
-    color: purple;
+    padding: 0 20px 30px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 20px;
 }
-label {
-    font-weight: bold;
+
+.sidebar-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--secondary-gold);
+    background: white;
+    margin: 0 auto 15px;
     display: block;
-    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
-input[type=text],
-input[type=number],
-textarea,
-select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #888;
-    border-radius: 5px;
+
+.sidebar-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--secondary-gold);
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
-#btnTambah {
-    width: 100%;
-    padding: 10px;
-    background: purple;
+
+.sidebar-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+}
+
+.sidebar-menu {
+    padding: 10px 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     color: white;
-    margin-top: 20px;
-    border: none;
-    border-radius: 20px;
-    font-size: 16px;
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: var(--secondary-gold);
+    padding-left: 30px;
+}
+
+.sidebar-menu a.active {
+    background-color: var(--secondary-gold);
+    color: var(--primary-purple);
+    font-weight: 700;
+    border-left-color: var(--primary-purple);
+}
+
+.menu-icon {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+}
+
+/* =====================================
+   MAIN CONTENT
+===================================== */
+.main-content {
+    margin-left: 280px;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* =====================================
+   HEADER
+===================================== */
+.content-header {
+    background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+    color: white;
+    padding: 30px 40px;
+    box-shadow: 0 4px 15px rgba(123, 44, 191, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.content-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--secondary-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.breadcrumb {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--secondary-gold);
+}
+
+.breadcrumb span {
+    color: var(--secondary-gold);
+}
+
+/* =====================================
+   CONTENT BODY
+===================================== */
+.content-body {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+/* =====================================
+   FORM CONTAINER
+===================================== */
+.form-container {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(123, 44, 191, 0.15);
+}
+
+.form-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-purple);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #F0F0F0;
+}
+
+/* =====================================
+   FORM ELEMENTS
+===================================== */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.form-label .required {
+    color: #F44336;
+    margin-left: 3px;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #E0E0E0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.1);
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-select {
     cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+}
+
+/* File Input Custom */
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-input-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #F5F5F5, #E8E8E8);
+    border: 2px dashed #BDBDBD;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #666;
+}
+
+.file-input-label:hover {
+    background: linear-gradient(135deg, #E8E8E8, #DADADA);
+    border-color: var(--primary-purple);
+    color: var(--primary-purple);
+}
+
+.file-input-wrapper input[type=file] {
+    position: absolute;
+    left: -9999px;
+}
+
+.file-name {
+    font-size: 13px;
+    color: #00C853;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.file-info {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+/* =====================================
+   IMAGE PREVIEW
+===================================== */
+.image-preview {
+    margin-top: 15px;
+    display: none;
+}
+
+.preview-img {
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* =====================================
+   FORM ACTIONS
+===================================== */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 2px solid #F0F0F0;
+}
+
+.btn-submit {
+    flex: 1;
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #00C853, #00E676);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 200, 83, 0.4);
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 14px 30px;
+    background: white;
+    color: #666;
+    border: 2px solid #E0E0E0;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-cancel:hover {
+    background: #F5F5F5;
+    border-color: #BDBDBD;
+    transform: translateY(-2px);
+}
+
+/* =====================================
+   RESPONSIVE DESIGN
+===================================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .content-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 25px 20px;
+        text-align: center;
+    }
+
+    .content-body {
+        padding: 20px;
+    }
+
+    .form-container {
+        padding: 25px 20px;
+    }
+
+    .form-title {
+        font-size: 24px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
 }
 </style>
+
+<script>
+// Preview gambar sebelum upload
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const fileName = document.getElementById('fileName');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+        fileName.textContent = '📁 File terpilih: ' + input.files[0].name;
+    }
+}
+</script>
+
 </head>
 
 <body>
 
-<div class="container">
-<h2>TAMBAH PRODUK</h2>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo">
+        <div class="sidebar-title">Zarali's Catering</div>
+        <div class="sidebar-subtitle">Admin Panel</div>
+    </div>
 
-<form method="POST" enctype="multipart/form-data">
+    <div class="sidebar-menu">
+        <a href="dashboard_admin.php">
+            <span class="menu-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+        <a href="produk_admin.php" class="active">
+            <span class="menu-icon">🍽️</span>
+            <span>Produk</span>
+        </a>
+        <a href="pesanan_admin.php">
+            <span class="menu-icon">📦</span>
+            <span>Pesanan</span>
+        </a>
+        <a href="riwayat_transaksi_admin.php">
+            <span class="menu-icon">💳</span>
+            <span>Transaksi</span>
+        </a>
+        <a href="laporan_penjualan_admin.php">
+            <span class="menu-icon">📈</span>
+            <span>Laporan</span>
+        </a>
+        <a href="logout_admin.php">
+            <span class="menu-icon">🚪</span>
+            <span>Logout</span>
+        </a>
+    </div>
+</div>
 
-    <label>Nama</label>
-    <input type="text" name="nama" required>
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    
+    <!-- HEADER -->
+    <div class="content-header">
+        <h2>Tambah Produk Baru</h2>
+        <div class="breadcrumb">
+            <a href="produk_admin.php">🍽️ Produk</a>
+            <span>›</span>
+            <span>Tambah Produk</span>
+        </div>
+    </div>
 
-    <label>Deskripsi</label>
-    <textarea name="deskripsi" required></textarea>
+    <!-- CONTENT BODY -->
+    <div class="content-body">
+        
+        <div class="form-container">
+            <div class="form-title">
+                <span>➕</span>
+                <span>Form Tambah Produk</span>
+            </div>
+            <p class="form-subtitle">Lengkapi informasi produk catering yang akan ditambahkan</p>
 
-    <label>Harga</label>
-    <input type="number" name="harga" required>
+            <form method="POST" enctype="multipart/form-data">
 
-    <label>Kategori</label>
-    <select name="kategori" required>
-        <option value="">--Pilih Kategori--</option>
-        <option value="Minuman">Minuman</option>
-        <option value="Makanan">Makanan</option>
-        <option value="Snack">Snack</option>
-    </select>
+                <div class="form-group">
+                    <label class="form-label">
+                        Nama Produk
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        name="nama" 
+                        class="form-input"
+                        placeholder="Contoh: Nasi Box Premium"
+                        required
+                    >
+                </div>
 
-    <label>Gambar</label>
-    <input type="file" name="gambar" accept="image/*" required>
+                <div class="form-group">
+                    <label class="form-label">
+                        Deskripsi Produk
+                        <span class="required">*</span>
+                    </label>
+                    <textarea 
+                        name="deskripsi" 
+                        class="form-textarea"
+                        placeholder="Jelaskan detail produk, komposisi menu, dan informasi lainnya..."
+                        required
+                    ></textarea>
+                </div>
 
-    <button id="btnTambah" name="tambah">Tambah</button>
+                <div class="form-group">
+                    <label class="form-label">
+                        Harga (Rp)
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        name="harga" 
+                        class="form-input"
+                        placeholder="Contoh: 50000"
+                        min="0"
+                        required
+                    >
+                </div>
 
-</form>
+                <div class="form-group">
+                    <label class="form-label">
+                        Kategori
+                        <span class="required">*</span>
+                    </label>
+                    <select name="kategori" class="form-select" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="Paket Besar">🍱 Paket Besar</option>
+                        <option value="Kue Satuan">🍰 Kue Satuan</option>
+                        <option value="Minuman">🥤 Minuman</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Gambar Produk
+                        <span class="required">*</span>
+                    </label>
+                    <div class="file-input-wrapper">
+                        <label for="gambar" class="file-input-label">
+                            <span>📷</span>
+                            <span>Pilih Gambar Produk</span>
+                        </label>
+                        <input 
+                            type="file" 
+                            id="gambar"
+                            name="gambar" 
+                            accept="image/*" 
+                            onchange="previewImage(this)"
+                            required
+                        >
+                    </div>
+                    <div id="fileName" class="file-name"></div>
+                    <div class="file-info">Format: JPG, PNG, JPEG (Maks. 2MB)</div>
+                    
+                    <div id="imagePreview" class="image-preview">
+                        <img id="previewImg" class="preview-img" src="" alt="Preview">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="produk_admin.php" class="btn-cancel">
+                        <span>↩️</span>
+                        <span>Batal</span>
+                    </a>
+                    <button type="submit" name="tambah" class="btn-submit">
+                        <span>✅</span>
+                        <span>Simpan Produk</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
 </div>
 
 </body>

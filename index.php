@@ -1,3 +1,9 @@
+<?php
+include 'includes/config.php';
+
+// Ambil semua produk dari database
+$query_produk = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC");
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -29,9 +35,6 @@
       flex-direction: column;
     }
 
-    /* =====================================
-       HEADER (KONSISTEN)
-    ===================================== */
     header {
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
       color: white;
@@ -101,12 +104,9 @@
       color: var(--secondary-gold);
     }
 
-    /* =====================================
-       BANNER (KONSISTEN)
-    ===================================== */
     .banner {
       background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
-      min-height: 320px;
+      min-height: 280px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -175,128 +175,178 @@
       }
     }
 
-    /* =====================================
-       KATEGORI SECTION
-    ===================================== */
-    .kategori {
-      display: flex;
-      flex-direction: column;
-      gap: 35px;
+    /* ===== PRODUK SECTION ===== */
+    .produk-section {
       padding: 60px 40px;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       width: 100%;
+      flex: 1;
     }
 
-    .card {
-      display: flex;
-      align-items: center;
-      background-color: #fff;
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      color: var(--primary-purple);
+      font-weight: 700;
+      margin-bottom: 12px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
+      border-radius: 2px;
+    }
+
+    .section-header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 20px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .product-card {
+      background: white;
       border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-      overflow: hidden;
-      transition: all 0.4s ease;
-      cursor: pointer;
-      height: 240px;
-      text-decoration: none;
-      border: 3px solid transparent;
-      position: relative;
+      box-shadow: 0 10px 40px rgba(123,44,191,0.12);
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.05), transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
-    }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
-    .card:hover {
+    .product-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(123, 44, 191, 0.25);
-      border-color: var(--accent-purple);
+      box-shadow: 0 15px 50px rgba(123,44,191,0.2);
     }
 
-    .card-image-container {
-      width: 340px;
-      height: 240px;
-      overflow: hidden;
-      flex-shrink: 0;
+    .product-image-container {
       position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
     }
 
-    .card-image-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1));
-      pointer-events: none;
-    }
-
-    .card img {
+    .product-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
+      transition: transform 0.3s ease;
     }
 
-    .card:hover img {
-      transform: scale(1.1);
+    .product-card:hover .product-image {
+      transform: scale(1.05);
     }
 
-    .card-content {
-      flex: 1;
-      padding: 30px 40px;
+    .product-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(123,44,191,0.4);
+    }
+
+    .product-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-bottom: 10px;
+      min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .card h3 {
-      font-size: 32px;
-      color: var(--primary-purple);
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      flex-grow: 1;
+      min-height: 60px;
+    }
+
+    .product-price {
+      font-size: 22px;
       font-weight: 700;
-      text-align: center;
-      transition: all 0.3s ease;
-      position: relative;
-      display: inline-block;
-    }
-
-    .card h3::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%) scaleX(0);
-      width: 80%;
-      height: 3px;
-      background-color: var(--secondary-gold);
-      transition: transform 0.3s ease;
-    }
-
-    .card:hover h3 {
       color: var(--accent-purple);
+      margin-bottom: 18px;
+      padding: 10px;
+      background: linear-gradient(135deg, rgba(123,44,191,0.05), rgba(157,78,221,0.05));
+      border-radius: 10px;
     }
 
-    .card:hover h3::after {
-      transform: translateX(-50%) scaleX(1);
+    .btn-detail {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(123,44,191,0.3);
     }
 
-    /* =====================================
-       FOOTER (KONSISTEN)
-    ===================================== */
+    .btn-detail:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(123,44,191,0.4);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 24px;
+      color: var(--primary-purple);
+      margin-bottom: 12px;
+    }
+
     footer {
       margin-top: auto;
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
@@ -326,9 +376,6 @@
       line-height: 1.6;
     }
 
-    /* =====================================
-       RESPONSIVE DESIGN
-    ===================================== */
     @media (max-width: 1024px) {
       header {
         padding: 16px 24px;
@@ -346,21 +393,13 @@
         font-size: 2.2rem;
       }
 
-      .kategori {
+      .produk-section {
         padding: 40px 24px;
       }
 
-      .card {
-        height: 200px;
-      }
-
-      .card-image-container {
-        width: 280px;
-        height: 200px;
-      }
-
-      .card h3 {
-        font-size: 26px;
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 24px;
       }
     }
 
@@ -392,7 +431,7 @@
       }
 
       .banner {
-        min-height: 280px;
+        min-height: 240px;
         padding: 30px 16px;
       }
 
@@ -404,27 +443,17 @@
         font-size: 1rem;
       }
 
-      .kategori {
+      .produk-section {
         padding: 30px 16px;
-        gap: 25px;
       }
 
-      .card {
-        flex-direction: column;
-        height: auto;
+      .section-header h2 {
+        font-size: 2rem;
       }
 
-      .card-image-container {
-        width: 100%;
-        height: 200px;
-      }
-
-      .card-content {
-        padding: 25px 20px;
-      }
-
-      .card h3 {
-        font-size: 24px;
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
       }
 
       footer {
@@ -432,6 +461,11 @@
       }
     }
 
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -457,37 +491,43 @@
 <div class="banner">
   <div class="banner-content">
     <h2>Selamat Datang di Zarali's Catering</h2>
-    <p>Pilih menu favorit Anda berdasarkan kategori di bawah</p>
+    <p>Hidangan lezat untuk setiap momen spesial Anda</p>
   </div>
 </div>
 
-<section class="kategori">
-  <a href="menu.php?kategori=paket_besar" class="card">
-    <div class="card-image-container">
-      <img src="gambar/paket_besar.jpg" alt="Paket Besar">
-    </div>
-    <div class="card-content">
-      <h3>Paket Besar</h3>
-    </div>
-  </a>
+<!-- SECTION SEMUA PRODUK -->
+<section class="produk-section">
+  <div class="section-header">
+    <h2>Menu Kami</h2>
+    <p>Pilihan hidangan terbaik untuk acara Anda</p>
+  </div>
 
-  <a href="menu.php?kategori=kue_satuan" class="card">
-    <div class="card-image-container">
-      <img src="gambar/kue_satuan.jpg" alt="Kue Satuan">
+  <?php if (mysqli_num_rows($query_produk) == 0) { ?>
+    <div class="empty-state">
+      <div class="empty-state-icon">🍽️</div>
+      <h3>Belum Ada Produk</h3>
+      <p>Produk akan segera tersedia. Silakan cek kembali nanti.</p>
     </div>
-    <div class="card-content">
-      <h3>Kue Satuan</h3>
+  <?php } else { ?>
+    <div class="products-grid">
+      <?php while ($produk = mysqli_fetch_assoc($query_produk)) { ?>
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="/Zaralis_catering/uploads/produk/<?= htmlspecialchars($produk['gambar']); ?>"
+                  alt="<?= htmlspecialchars($produk['nama']); ?>"
+                  class="product-image"> 
+                 alt="<?= htmlspecialchars($produk['nama']); ?>" 
+                 class="product-image">
+            <span class="product-badge"><?= htmlspecialchars($produk['kategori']); ?></span>
+          </div>
+          <h3><?= htmlspecialchars($produk['nama']); ?></h3>
+          <p class="product-description"><?= htmlspecialchars($produk['deskripsi']); ?></p>
+          <div class="product-price">Rp <?= number_format($produk['harga'], 0, ',', '.'); ?></div>
+          <a href="#" class="btn-detail">Pesan</a>
+        </div>
+      <?php } ?>
     </div>
-  </a>
-
-  <a href="menu.php?kategori=minuman" class="card">
-    <div class="card-image-container">
-      <img src="gambar/minuman.jpg" alt="Minuman">
-    </div>
-    <div class="card-content">
-      <h3>Minuman</h3>
-    </div>
-  </a>
+  <?php } ?>
 </section>
 
 <footer>
