@@ -175,8 +175,8 @@ if (isset($_POST['login'])) {
   <nav>
     <a href="index.php">Home</a>
     <a href="menu.php">Menu</a>
-    <a href="users/testi.html">Testimoni</a>
-    <a href="users/pesanan.html">Pesanan saya</a>
+    <a href="users/testi.php">Testimoni</a>
+    <a href="users/pesanan.php">Pesanan saya</a>
     <a href="users/contact.html">Hubungi kami</a>
     <a href="about.html">Tentang kami</a>
     <a href="login.php" class="active">Login</a>

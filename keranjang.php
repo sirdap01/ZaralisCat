@@ -727,6 +727,178 @@ footer {
     opacity: 1;
     bottom: 85px;
 }
+/* ===== FLOATING CART - BACK MODE ===== */
+.floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+}
+
+.floating-cart.back-mode .cart-button {
+    background: linear-gradient(135deg, #2196F3, #42A5F5);
+    border-color: white;
+}
+
+.floating-cart.back-mode .cart-button:hover {
+    background: linear-gradient(135deg, #1976D2, #2196F3);
+    transform: translateY(-5px) scale(1.05) rotate(-10deg);
+    box-shadow: 0 12px 35px rgba(33, 150, 243, 0.5);
+}
+
+.cart-button {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid var(--secondary-gold);
+    text-decoration: none;
+    position: relative;
+}
+
+.cart-button:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.cart-icon {
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.floating-cart.back-mode .cart-icon {
+    animation: backArrow 1.5s infinite;
+}
+
+@keyframes backArrow {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-5px); }
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #F44336, #E57373);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+    animation: pulse 2s infinite;
+    border: 2px solid white;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+.cart-badge.empty {
+    display: none;
+}
+
+.back-tooltip {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    background: linear-gradient(135deg, #2196F3, #42A5F5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.back-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 25px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #42A5F5;
+}
+
+.floating-cart.back-mode:hover .back-tooltip {
+    opacity: 1;
+    bottom: 85px;
+}
+
+/* Floating effect on scroll */
+.floating-cart.scrolled .cart-button {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ===== RESPONSIVE FLOATING CART ===== */
+@media (max-width: 1024px) {
+    .floating-cart {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .cart-button {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cart-icon {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-cart {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .cart-button {
+        width: 55px;
+        height: 55px;
+    }
+
+    .cart-icon {
+        font-size: 26px;
+    }
+
+    .cart-badge {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+
+    .back-tooltip {
+        font-size: 11px;
+        padding: 8px 15px;
+        bottom: 70px;
+    }
+}
+
 </style>
 
 <script>
@@ -858,8 +1030,8 @@ function closeToast() {
     <nav>
         <a href="index.php">Home</a>
         <a href="menu.php">Menu</a>
-        <a href="users/testi.html">Testimoni</a>
-        <a href="users/pesanan.html">Pesanan saya</a>
+        <a href="users/testi.php">Testimoni</a>
+        <a href="users/pesanan.php">Pesanan saya</a>
         <a href="users/contact.html">Hubungi kami</a>
         <a href="about.html">Tentang kami</a>
         <a href="logout.php">Logout</a>
@@ -959,6 +1131,7 @@ function closeToast() {
         </div>
     <?php else: ?>
         <!-- EMPTY CART -->
+
         <div class="empty-cart">
             <div class="empty-icon">🛒</div>
             <h3>Keranjang Kosong</h3>
@@ -978,6 +1151,46 @@ function closeToast() {
         © 2024 Zarali's Catering. All Rights Reserved.
     </div>
 </footer>
+
+<!-- FLOATING CART - SMART BACK BUTTON -->
+<div class="floating-cart back-mode">
+    <a href="#" onclick="smartBack(event)" class="cart-button" title="Kembali">
+        <div class="cart-icon">←</div>
+        <span class="cart-badge <?= $total_items == 0 ? 'empty' : '' ?>">
+            <?= $total_items ?>
+        </span>
+    </a>
+    <div class="back-tooltip">← Kembali Belanja</div>
+</div>
+
+<script>
+function smartBack(event) {
+    event.preventDefault();
+    
+    // Add scroll effect to floating cart
+    window.addEventListener('scroll', function() {
+        const floatingCart = document.querySelector('.floating-cart');
+        if (floatingCart && window.scrollY > 100) {
+            floatingCart.classList.add('scrolled');
+        } else if (floatingCart) {
+            floatingCart.classList.remove('scrolled');
+        }
+    });
+
+    // Cek apakah ada history sebelumnya
+    if (document.referrer && 
+        document.referrer !== window.location.href && 
+        !document.referrer.includes('login.php') &&
+        !document.referrer.includes('register.php') &&
+        !document.referrer.includes('keranjang.php')) {
+        // Kembali ke halaman sebelumnya
+        window.history.back();
+    } else {
+        // Default ke menu jika tidak ada history yang valid
+        window.location.href = 'menu.php';
+    }
+}
+</script>
 
 </body>
 </html>

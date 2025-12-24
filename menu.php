@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'includes/config.php';
 
 // Ambil kategori dari URL (jika ada)
@@ -15,6 +16,15 @@ if ($kategori_filter) {
 $count_paket_besar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk WHERE kategori='Paket Besar'"))['total'];
 $count_kue_satuan = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk WHERE kategori='Kue Satuan'"))['total'];
 $count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk WHERE kategori='Minuman'"))['total'];
+
+// Hitung jumlah item di keranjang (untuk badge notifikasi)
+$cart_count = 0;
+if (isset($_SESSION['id_pengguna'])) {
+    $id_pengguna = (int) $_SESSION['id_pengguna'];
+    $cart_result = mysqli_query($koneksi, "SELECT SUM(jumlah) as total FROM keranjang WHERE id_pengguna = $id_pengguna");
+    $cart_data = mysqli_fetch_assoc($cart_result);
+    $cart_count = $cart_data['total'] ?? 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -117,6 +127,88 @@ $count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as t
     nav a.active {
       background-color: rgba(255, 215, 0, 0.2);
       color: var(--secondary-gold);
+    }
+
+    /* ===== FLOATING CART BUTTON ===== */
+    .floating-cart {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+    }
+
+    .cart-button {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid var(--secondary-gold);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .cart-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(123, 44, 191, 0.5);
+    }
+
+    .cart-button:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .cart-icon {
+      font-size: 32px;
+      animation: swing 2s infinite;
+    }
+
+    @keyframes swing {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      75% { transform: rotate(15deg); }
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: linear-gradient(135deg, #F44336, #E57373);
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+      animation: pulse 2s infinite;
+      border: 2px solid white;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .cart-badge.empty {
+      display: none;
+    }
+
+    /* Floating effect on scroll */
+    .floating-cart.scrolled .cart-button {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
 
     /* =====================================
@@ -602,6 +694,20 @@ $count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as t
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 24px;
       }
+
+      .floating-cart {
+        bottom: 20px;
+        right: 20px;
+      }
+
+      .cart-button {
+        width: 60px;
+        height: 60px;
+      }
+
+      .cart-icon {
+        font-size: 28px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -683,6 +789,26 @@ $count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as t
       footer {
         padding: 24px 16px;
       }
+
+      .floating-cart {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      .cart-button {
+        width: 55px;
+        height: 55px;
+      }
+
+      .cart-icon {
+        font-size: 24px;
+      }
+
+      .cart-badge {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -696,9 +822,33 @@ $count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as t
     }
 
   </style>
+
+  <script>
+  // Add scroll effect to floating cart
+  window.addEventListener('scroll', function() {
+    const floatingCart = document.querySelector('.floating-cart');
+    if (floatingCart && window.scrollY > 100) {
+      floatingCart.classList.add('scrolled');
+    } else if (floatingCart) {
+      floatingCart.classList.remove('scrolled');
+    }
+  });
+  </script>
 </head>
 
 <body>
+
+<!-- FLOATING CART BUTTON (only if logged in) -->
+<?php if (isset($_SESSION['id_pengguna'])): ?>
+<div class="floating-cart">
+  <a href="keranjang.php" class="cart-button" title="Lihat Keranjang">
+    <div class="cart-icon">🛒</div>
+    <span id="cartBadge" class="cart-badge <?= $cart_count == 0 ? 'empty' : '' ?>">
+      <?= $cart_count ?>
+    </span>
+  </a>
+</div>
+<?php endif; ?>
 
 <header>
   <div class="logo-container">
@@ -709,11 +859,13 @@ $count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as t
   <nav>
     <a href="index.php">Home</a>
     <a href="menu.php" class="active">Menu</a>
-    <a href="users/testi.html">Testimoni</a>
-    <a href="users/pesanan.html">Pesanan saya</a>
+    <a href="users/testi.php">Testimoni</a>
+    <a href="users/pesanan.php">Pesanan saya</a>
     <a href="users/contact.html">Hubungi kami</a>
     <a href="about.html">Tentang kami</a>
-    <a href="login.php">Login</a>
+    <a href="<?= isset($_SESSION['id_pengguna']) ? 'logout.php' : 'login.php' ?>">
+      <?= isset($_SESSION['id_pengguna']) ? 'Logout' : 'Login' ?>
+    </a>
   </nav>
 </header>
 
