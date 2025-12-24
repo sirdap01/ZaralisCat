@@ -1,3 +1,21 @@
+<?php
+include 'includes/config.php';
+
+// Ambil kategori dari URL (jika ada)
+$kategori_filter = isset($_GET['kategori']) ? mysqli_real_escape_string($koneksi, $_GET['kategori']) : '';
+
+// Query produk berdasarkan kategori
+if ($kategori_filter) {
+    $query_produk = mysqli_query($koneksi, "SELECT * FROM produk WHERE kategori = '$kategori_filter' ORDER BY id DESC");
+} else {
+    $query_produk = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC");
+}
+
+// Hitung jumlah produk per kategori
+$count_paket_besar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk WHERE kategori='Paket Besar'"))['total'];
+$count_kue_satuan = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk WHERE kategori='Kue Satuan'"))['total'];
+$count_minuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk WHERE kategori='Minuman'"))['total'];
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -260,8 +278,10 @@
       flex: 1;
       padding: 30px 40px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 12px;
     }
 
     .card h3 {
@@ -292,6 +312,221 @@
 
     .card:hover h3::after {
       transform: translateX(-50%) scaleX(1);
+    }
+
+    .card-count {
+      background: linear-gradient(135deg, var(--secondary-gold), #FFC700);
+      color: var(--primary-purple);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+    }
+
+    /* =====================================
+       PRODUK SECTION
+    ===================================== */
+    .produk-section {
+      padding: 60px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      display: <?= $kategori_filter ? 'block' : 'none' ?>;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      color: var(--primary-purple);
+      font-weight: 700;
+      margin-bottom: 12px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
+      border-radius: 2px;
+    }
+
+    .filter-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .filter-badge {
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+    }
+
+    .btn-reset {
+      padding: 8px 20px;
+      background: white;
+      color: var(--primary-purple);
+      border: 2px solid var(--primary-purple);
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-reset:hover {
+      background: var(--primary-purple);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(123,44,191,0.12);
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 50px rgba(123,44,191,0.2);
+    }
+
+    .product-image-container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(123,44,191,0.4);
+    }
+
+    .product-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-bottom: 10px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      flex-grow: 1;
+      min-height: 60px;
+    }
+
+    .product-price {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-purple);
+      margin-bottom: 18px;
+      padding: 10px;
+      background: linear-gradient(135deg, rgba(123,44,191,0.05), rgba(157,78,221,0.05));
+      border-radius: 10px;
+    }
+
+    .btn-detail {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(123,44,191,0.3);
+    }
+
+    .btn-detail:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(123,44,191,0.4);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 24px;
+      color: var(--primary-purple);
+      margin-bottom: 12px;
     }
 
     /* =====================================
@@ -362,6 +597,11 @@
       .card h3 {
         font-size: 26px;
       }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 24px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -404,8 +644,12 @@
         font-size: 1rem;
       }
 
-      .kategori {
+      .kategori,
+      .produk-section {
         padding: 30px 16px;
+      }
+
+      .kategori {
         gap: 25px;
       }
 
@@ -427,8 +671,27 @@
         font-size: 24px;
       }
 
+      .section-header h2 {
+        font-size: 2rem;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
       footer {
         padding: 24px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-info {
+        flex-direction: column;
       }
     }
 
@@ -445,7 +708,7 @@
 
   <nav>
     <a href="index.php">Home</a>
-    <a href="menu.html" class="active">Menu</a>
+    <a href="menu.php" class="active">Menu</a>
     <a href="users/testi.html">Testimoni</a>
     <a href="users/pesanan.html">Pesanan saya</a>
     <a href="users/contact.html">Hubungi kami</a>
@@ -456,39 +719,90 @@
 
 <div class="banner">
   <div class="banner-content">
-    <h2>Pilih Menu Favorit Anda</h2>
-    <p>👇 Pilih menu berdasarkan kategori di bawah 👇</p>
+    <h2><?= $kategori_filter ? 'Menu ' . $kategori_filter : 'Pilih Menu Favorit Anda' ?></h2>
+    <p><?= $kategori_filter ? 'Produk berkualitas pilihan terbaik' : '👇 Pilih menu berdasarkan kategori di bawah 👇' ?></p>
   </div>
 </div>
 
+<!-- KATEGORI SECTION (Tampil jika tidak ada filter) -->
+<?php if (!$kategori_filter): ?>
 <section class="kategori">
-  <a href="#" class="card">
+  <a href="menu.php?kategori=Paket Besar" class="card">
     <div class="card-image-container">
       <img src="gambar/paket_besar.jpg" alt="Paket Besar">
     </div>
     <div class="card-content">
       <h3>Paket Besar</h3>
+      <span class="card-count"><?= $count_paket_besar ?> Produk</span>
     </div>
   </a>
 
-  <a href="#" class="card">
+  <a href="menu.php?kategori=Kue Satuan" class="card">
     <div class="card-image-container">
       <img src="gambar/kue_satuan.jpg" alt="Kue Satuan">
     </div>
     <div class="card-content">
       <h3>Kue Satuan</h3>
+      <span class="card-count"><?= $count_kue_satuan ?> Produk</span>
     </div>
   </a>
 
-  <a href="#" class="card">
+  <a href="menu.php?kategori=Minuman" class="card">
     <div class="card-image-container">
       <img src="gambar/minuman.jpg" alt="Minuman">
     </div>
     <div class="card-content">
       <h3>Minuman</h3>
+      <span class="card-count"><?= $count_minuman ?> Produk</span>
     </div>
   </a>
 </section>
+<?php endif; ?>
+
+<!-- PRODUK SECTION (Tampil jika ada filter) -->
+<?php if ($kategori_filter): ?>
+<section class="produk-section">
+  <div class="section-header">
+    <h2><?= htmlspecialchars($kategori_filter) ?></h2>
+    <div class="filter-info">
+      <span class="filter-badge">
+        <?= mysqli_num_rows($query_produk) ?> Produk Ditemukan
+      </span>
+      <a href="menu.php" class="btn-reset">
+        ← Kembali ke Kategori
+      </a>
+    </div>
+  </div>
+
+  <?php if (mysqli_num_rows($query_produk) == 0): ?>
+    <div class="empty-state">
+      <div class="empty-state-icon">🍽️</div>
+      <h3>Produk Belum Tersedia</h3>
+      <p>Produk untuk kategori ini akan segera hadir. Silakan cek kategori lainnya.</p>
+      <br>
+      <a href="menu.php" class="btn-reset">← Kembali ke Kategori</a>
+    </div>
+  <?php else: ?>
+    <div class="products-grid">
+      <?php while ($produk = mysqli_fetch_assoc($query_produk)): ?>
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="uploads/produk/<?= htmlspecialchars($produk['gambar']); ?>"
+                 alt="<?= htmlspecialchars($produk['nama']); ?>"
+                 class="product-image"
+                 onerror="this.src='gambar/placeholder.jpg';">
+            <span class="product-badge"><?= htmlspecialchars($produk['kategori']); ?></span>
+          </div>
+          <h3><?= htmlspecialchars($produk['nama']); ?></h3>
+          <p class="product-description"><?= htmlspecialchars($produk['deskripsi']); ?></p>
+          <div class="product-price">Rp <?= number_format($produk['harga'], 0, ',', '.'); ?></div>
+          <a href="#" class="btn-detail">Pesan</a>
+        </div>
+      <?php endwhile; ?>
+    </div>
+  <?php endif; ?>
+</section>
+<?php endif; ?>
 
 <footer>
   <div class="footer-content">

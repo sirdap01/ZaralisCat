@@ -651,7 +651,10 @@ body {
                 while ($p = mysqli_fetch_assoc($produk)): 
                 ?>
                 <div class="product-card">
-                    <img src="uploads/<?= $p['gambar'] ?>" alt="<?= $p['nama'] ?>" class="product-image">
+                    <img src="../uploads/produk/<?= $p['gambar'] ?>" 
+                        alt="<?= $p['nama'] ?>" 
+                        class="product-image"
+                        onerror="this.onerror=null; this.src='../gambar/placeholder.jpg';">
                     <div class="product-badge"><?= $p['kategori'] ?></div>
                     
                     <div class="product-info">

@@ -160,7 +160,7 @@ if (isset($_POST['register'])) {
   </div>
   <nav>
     <a href="index.html">Home</a>
-    <a href="menu.html">Menu</a>
+    <a href="menu.php">Menu</a>
     <a href="users/testi.html">Testimoni</a>
     <a href="users/pesanan.html">Pesanan saya</a>
     <a href="users/contact.html">Hubungi kami</a>

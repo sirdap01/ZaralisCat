@@ -1,6 +1,9 @@
 <?php
 include 'koneksi.php';
 
+$success = false;
+$error_message = "";
+
 if (isset($_POST['tambah'])) {
 
     $nama      = mysqli_real_escape_string($conn, $_POST['nama']);
@@ -12,29 +15,32 @@ if (isset($_POST['tambah'])) {
     $tmp    = $_FILES['gambar']['tmp_name'];
 
     if ($gambar != "") {
-        // PERBAIKAN: Buat folder jika belum ada
-        $upload_dir = "uploads/produk/";
-
+        $upload_dir = "../uploads/produk/";
+        
         if (!file_exists($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
+        
+        $ext = pathinfo($gambar, PATHINFO_EXTENSION);
+        $new_name = time() . '_' . uniqid() . '.' . $ext;
+        
+        if (move_uploaded_file($tmp, $upload_dir . $new_name)) {
+            
+            $query = "INSERT INTO produk 
+                      (nama, deskripsi, harga, kategori, gambar) 
+                      VALUES 
+                      ('$nama','$deskripsi','$harga','$kategori','$new_name')";
 
-        move_uploaded_file($tmp, $upload_dir . $gambar);
-
-
-        $query = "INSERT INTO produk 
-                  (nama, deskripsi, harga, kategori, gambar) 
-                  VALUES 
-                  ('$nama','$deskripsi','$harga','$kategori','$gambar')";
-
-        if (mysqli_query($conn, $query)) {
-            header("Location: produk_admin.php");
-            exit;
+            if (mysqli_query($conn, $query)) {
+                $success = true;
+            } else {
+                $error_message = "Gagal menyimpan ke database: " . mysqli_error($conn);
+            }
         } else {
-            echo "<script>alert('Gagal menyimpan data!');</script>";
+            $error_message = "Gagal upload gambar!";
         }
     } else {
-        echo "<script>alert('Gambar wajib diupload!');</script>";
+        $error_message = "Gambar wajib diupload!";
     }
 }
 ?>
@@ -69,7 +75,154 @@ body {
 }
 
 /* =====================================
-   SIDEBAR
+   NOTIFICATION POPUP
+===================================== */
+.notification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.notification-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.notification-popup {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(123, 44, 191, 0.3);
+    animation: slideUp 0.4s ease;
+    text-align: center;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.notification-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    animation: bounceIn 0.6s ease;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.notification-icon.success {
+    background: linear-gradient(135deg, #00C853, #00E676);
+    box-shadow: 0 8px 20px rgba(0, 200, 83, 0.3);
+}
+
+.notification-icon.error {
+    background: linear-gradient(135deg, #F44336, #E57373);
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.3);
+}
+
+.notification-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.notification-title.success {
+    color: #00C853;
+}
+
+.notification-title.error {
+    color: #F44336;
+}
+
+.notification-message {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-notification {
+    flex: 1;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #00C853, #00E676);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 200, 83, 0.4);
+}
+
+.btn-secondary {
+    background: white;
+    color: #666;
+    border: 2px solid #E0E0E0;
+}
+
+.btn-secondary:hover {
+    background: #F5F5F5;
+    transform: translateY(-2px);
+}
+
+/* =====================================
+   SIDEBAR (sama seperti sebelumnya)
 ===================================== */
 .sidebar {
     width: 280px;
@@ -162,9 +315,6 @@ body {
     min-height: 100vh;
 }
 
-/* =====================================
-   HEADER
-===================================== */
 .content-header {
     background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
     color: white;
@@ -204,18 +354,12 @@ body {
     color: var(--secondary-gold);
 }
 
-/* =====================================
-   CONTENT BODY
-===================================== */
 .content-body {
     padding: 40px;
     display: flex;
     justify-content: center;
 }
 
-/* =====================================
-   FORM CONTAINER
-===================================== */
 .form-container {
     width: 100%;
     max-width: 800px;
@@ -243,9 +387,6 @@ body {
     border-bottom: 2px solid #F0F0F0;
 }
 
-/* =====================================
-   FORM ELEMENTS
-===================================== */
 .form-group {
     margin-bottom: 25px;
 }
@@ -298,7 +439,6 @@ body {
     padding-right: 40px;
 }
 
-/* File Input Custom */
 .file-input-wrapper {
     position: relative;
     overflow: hidden;
@@ -345,9 +485,6 @@ body {
     margin-top: 5px;
 }
 
-/* =====================================
-   IMAGE PREVIEW
-===================================== */
 .image-preview {
     margin-top: 15px;
     display: none;
@@ -363,9 +500,6 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* =====================================
-   FORM ACTIONS
-===================================== */
 .form-actions {
     display: flex;
     gap: 15px;
@@ -421,9 +555,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* =====================================
-   RESPONSIVE DESIGN
-===================================== */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
@@ -454,7 +585,8 @@ body {
         font-size: 24px;
     }
 
-    .form-actions {
+    .form-actions,
+    .notification-actions {
         flex-direction: column;
     }
 }
@@ -479,11 +611,72 @@ function previewImage(input) {
         fileName.textContent = '📁 File terpilih: ' + input.files[0].name;
     }
 }
+
+// Show notification popup
+function showNotification(type) {
+    const overlay = document.getElementById('notificationOverlay');
+    overlay.classList.add('show');
+    
+    // Auto redirect after 3 seconds for success
+    if (type === 'success') {
+        setTimeout(function() {
+            window.location.href = 'produk_admin.php';
+        }, 3000);
+    }
+}
+
+// Close notification
+function closeNotification() {
+    const overlay = document.getElementById('notificationOverlay');
+    overlay.classList.remove('show');
+}
 </script>
 
 </head>
 
 <body>
+
+<!-- NOTIFICATION POPUP -->
+<?php if ($success): ?>
+<div id="notificationOverlay" class="notification-overlay">
+    <div class="notification-popup">
+        <div class="notification-icon success">✓</div>
+        <h2 class="notification-title success">Berhasil!</h2>
+        <p class="notification-message">
+            Produk berhasil ditambahkan ke database.<br>
+            Anda akan diarahkan ke halaman produk...
+        </p>
+        <div class="notification-actions">
+            <a href="produk_admin.php" class="btn-notification btn-success">
+                <span>✓</span>
+                <span>Lihat Produk</span>
+            </a>
+            <a href="tambah_produk_admin.php" class="btn-notification btn-secondary">
+                <span>+</span>
+                <span>Tambah Lagi</span>
+            </a>
+        </div>
+    </div>
+</div>
+<script>showNotification('success');</script>
+<?php endif; ?>
+
+<?php if ($error_message): ?>
+<div id="notificationOverlay" class="notification-overlay">
+    <div class="notification-popup">
+        <div class="notification-icon error">✕</div>
+        <h2 class="notification-title error">Gagal!</h2>
+        <p class="notification-message"><?= $error_message ?></p>
+        <div class="notification-actions">
+            <button onclick="closeNotification()" class="btn-notification btn-success" style="flex: 1;">
+                <span>↩️</span>
+                <span>Coba Lagi</span>
+            </button>
+        </div>
+    </div>
+</div>
+<script>showNotification('error');</script>
+<?php endif; ?>
 
 <!-- SIDEBAR -->
 <div class="sidebar">

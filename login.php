@@ -12,14 +12,16 @@ if (isset($_POST['login'])) {
     $user = mysqli_fetch_assoc($query);
 
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['id']   = $user['id'];
+        // UBAH INI - gunakan 'id_pengguna' bukan 'id'
+        $_SESSION['id_pengguna'] = $user['id'];  // ← PERBAIKAN DI SINI
         $_SESSION['nama'] = $user['nama'];
+        $_SESSION['email'] = $user['email'];     // ← Tambahkan email juga
         $_SESSION['role'] = $user['role'];
 
         if ($user['role'] === 'admin') {
             header("Location: admin/dashboard_admin.php");
         } else {
-            header("Location: index.html");
+            header("Location: index.php");
         }
         exit;
     } else {  
@@ -104,6 +106,29 @@ if (isset($_POST['login'])) {
     @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     .login-header h2 { font-size: 28px; font-weight: 700; color: var(--primary-purple); margin-bottom: 8px; }
     .login-header p { font-size: 15px; color: #666; font-weight: 400; }
+    
+    /* ===== ERROR MESSAGE ===== */
+    .error-message {
+      background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+      border-left: 4px solid #F44336;
+      color: #C62828;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: shake 0.5s ease;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+    
     .form-group { margin-bottom: 25px; }
     .form-group label { display: block; font-size: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
     .form-group input {
@@ -149,7 +174,7 @@ if (isset($_POST['login'])) {
   </div>
   <nav>
     <a href="index.php">Home</a>
-    <a href="menu.html">Menu</a>
+    <a href="menu.php">Menu</a>
     <a href="users/testi.html">Testimoni</a>
     <a href="users/pesanan.html">Pesanan saya</a>
     <a href="users/contact.html">Hubungi kami</a>
@@ -175,8 +200,9 @@ if (isset($_POST['login'])) {
 
     <!-- menampilkan pesan error jika ada -->
     <?php if ($error): ?>
-      <div style="color:#d93025;text-align:center;margin-bottom:15px;font-weight:600;">
-        <?= htmlspecialchars($error) ?>
+      <div class="error-message">
+        <span style="font-size: 20px;">⚠️</span>
+        <span><?= htmlspecialchars($error) ?></span>
       </div>
     <?php endif; ?>
 
