@@ -29,7 +29,7 @@ if (!empty($_GET['metode'])) {
 $query = mysqli_query($conn, "
     SELECT * FROM pesanan 
     WHERE status='Lunas' $where_date $where_metode
-    ORDER BY id DESC
+    ORDER BY id_pesanan DESC
 ");
 
 if (!$query) {

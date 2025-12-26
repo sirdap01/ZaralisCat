@@ -11,10 +11,11 @@ $total_pendapatan = $data_total['total'] ?? 0;
 /* =======================
    PESANAN TERBARU (5)
 ======================= */
+// PERBAIKAN: Ganti 'id' menjadi 'id_pesanan'
 $q_pesanan = mysqli_query($conn, "
-    SELECT tanggal, nama_pelanggan, status, total_harga 
+    SELECT tanggal_pesanan, nama_pelanggan, status, total_harga 
     FROM pesanan 
-    ORDER BY id DESC 
+    ORDER BY id_pesanan DESC 
     LIMIT 5
 ");
 
@@ -531,16 +532,16 @@ tbody tr:last-child td {
                         <tbody>
                             <?php if(mysqli_num_rows($q_pesanan) > 0): ?>
                                 <?php while($p = mysqli_fetch_assoc($q_pesanan)): ?>
-                                <tr>
-                                    <td><?= $p['tanggal'] ?></td>
-                                    <td><?= $p['nama_pelanggan'] ?></td>
-                                    <td>
-                                        <span class="status-badge status-<?= strtolower($p['status']) ?>">
-                                            <?= $p['status'] ?>
-                                        </span>
-                                    </td>
-                                    <td><strong>Rp <?= number_format($p['total_harga'], 0, ',', '.') ?></strong></td>
-                                </tr>
+                                    <tr>
+                                        <td><?= date('d M Y', strtotime($p['tanggal_pesanan'])) ?></td>
+                                        <td><?= htmlspecialchars($p['nama_pelanggan']) ?></td>
+                                        <td>
+                                            <span class="status-badge status-<?= strtolower($p['status']) ?>">
+                                                <?= htmlspecialchars($p['status']) ?>
+                                            </span>
+                                        </td>
+                                        <td><strong>Rp <?= number_format($p['total_harga'], 0, ',', '.') ?></strong></td>
+                                    </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>

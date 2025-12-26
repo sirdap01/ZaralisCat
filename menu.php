@@ -852,16 +852,16 @@ if (isset($_SESSION['id_pengguna'])) {
 
 <header>
   <div class="logo-container">
-    <img src="gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
+    <img src="../gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
     <h1>Zarali's Catering</h1>
   </div>
 
   <nav>
-    <a href="index.php">Home</a>
+    <a href="../index.php">Home</a>
     <a href="menu.php" class="active">Menu</a>
     <a href="users/testi.php">Testimoni</a>
     <a href="users/pesanan.php">Pesanan saya</a>
-    <a href="users/contact.html">Hubungi kami</a>
+    <a href="users/contact.php">Hubungi kami</a>
     <a href="about.html">Tentang kami</a>
     <a href="<?= isset($_SESSION['id_pengguna']) ? 'logout.php' : 'login.php' ?>">
       <?= isset($_SESSION['id_pengguna']) ? 'Logout' : 'Login' ?>
@@ -881,7 +881,7 @@ if (isset($_SESSION['id_pengguna'])) {
 <section class="kategori">
   <a href="menu.php?kategori=Paket Besar" class="card">
     <div class="card-image-container">
-      <img src="gambar/paket_besar.jpg" alt="Paket Besar">
+      <img src="../gambar/paket_besar.jpg" alt="Paket Besar">
     </div>
     <div class="card-content">
       <h3>Paket Besar</h3>
@@ -891,7 +891,7 @@ if (isset($_SESSION['id_pengguna'])) {
 
   <a href="menu.php?kategori=Kue Satuan" class="card">
     <div class="card-image-container">
-      <img src="gambar/kue_satuan.jpg" alt="Kue Satuan">
+      <img src="../gambar/kue_satuan.jpg" alt="Kue Satuan">
     </div>
     <div class="card-content">
       <h3>Kue Satuan</h3>
@@ -901,7 +901,7 @@ if (isset($_SESSION['id_pengguna'])) {
 
   <a href="menu.php?kategori=Minuman" class="card">
     <div class="card-image-container">
-      <img src="gambar/minuman.jpg" alt="Minuman">
+      <img src="../gambar/minuman.jpg" alt="Minuman">
     </div>
     <div class="card-content">
       <h3>Minuman</h3>

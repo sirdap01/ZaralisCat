@@ -495,7 +495,7 @@
     <a href="../menu.php">Menu</a>
     <a href="testi.php">Testimoni</a>
     <a href="pesanan.php">Pesanan saya</a>
-    <a href="contact.html" class="active">Hubungi kami</a>
+    <a href="contact.php" class="active">Hubungi kami</a>
     <a href="../about.html">Tentang kami</a>
     <a href="../login.php">Login</a>
   </nav>

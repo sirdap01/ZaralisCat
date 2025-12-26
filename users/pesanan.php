@@ -2,26 +2,27 @@
 session_start();
 include '../includes/config.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['id_pengguna'])) {
-    header("Location: ../login.php");
-    exit;
+// Cek apakah user sudah login
+$is_logged_in = isset($_SESSION['id_pengguna']);
+$id_pengguna = $is_logged_in ? (int) $_SESSION['id_pengguna'] : 0;
+
+// Jika sudah login, ambil data pesanan
+$query_pesanan = null;
+if ($is_logged_in) {
+    $query_pesanan = mysqli_query($koneksi, "
+        SELECT * FROM pesanan 
+        WHERE id_pengguna = $id_pengguna 
+        ORDER BY tanggal_pesanan DESC
+    ");
 }
-
-$id_pengguna = (int) $_SESSION['id_pengguna'];
-
-// Get user orders
-$query_pesanan = mysqli_query($koneksi, "
-    SELECT * FROM pesanan 
-    WHERE id_pengguna = $id_pengguna 
-    ORDER BY tanggal_pesanan DESC
-");
 
 // Hitung jumlah item di keranjang (untuk badge notifikasi)
 $cart_count = 0;
-$cart_result = mysqli_query($koneksi, "SELECT SUM(jumlah) as total FROM keranjang WHERE id_pengguna = $id_pengguna");
-$cart_data = mysqli_fetch_assoc($cart_result);
-$cart_count = $cart_data['total'] ?? 0;
+if ($is_logged_in) {
+    $cart_result = mysqli_query($koneksi, "SELECT SUM(jumlah) as total FROM keranjang WHERE id_pengguna = $id_pengguna");
+    $cart_data = mysqli_fetch_assoc($cart_result);
+    $cart_count = $cart_data['total'] ?? 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -54,9 +55,6 @@ $cart_count = $cart_data['total'] ?? 0;
       flex-direction: column;
     }
 
-    /* =====================================
-       HEADER (IMPROVED CONSISTENCY)
-    ===================================== */
     header {
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
       color: white;
@@ -198,7 +196,6 @@ $cart_count = $cart_data['total'] ?? 0;
       display: none;
     }
 
-    /* Floating effect on scroll */
     .floating-cart.scrolled .cart-button {
       animation: float 3s ease-in-out infinite;
     }
@@ -208,12 +205,9 @@ $cart_count = $cart_data['total'] ?? 0;
       50% { transform: translateY(-10px); }
     }
 
-    /* =====================================
-       BANNER (ENHANCED)
-    ===================================== */
     .banner {
       background: linear-gradient(135deg, var(--accent-purple), var(--primary-purple));
-      min-height: 320px;
+      min-height: 280px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -257,7 +251,6 @@ $cart_count = $cart_data['total'] ?? 0;
       font-weight: 300;
       color: white;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      margin-bottom: 30px;
       animation: fadeInUp 0.8s ease 0.2s both;
     }
 
@@ -283,37 +276,6 @@ $cart_count = $cart_data['total'] ?? 0;
       }
     }
 
-    /* =====================================
-       SECTION TITLE (IMPROVED)
-    ===================================== */
-    .section-header {
-      text-align: center;
-      margin: 0;
-      color: white;
-      font-size: 32px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
-      padding: 24px 20px;
-      box-shadow: 0 5px 20px rgba(123, 44, 191, 0.3);
-      letter-spacing: 1.5px;
-      position: relative;
-    }
-
-    .section-header::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 4px;
-      background-color: var(--secondary-gold);
-      border-radius: 2px;
-    }
-
-    /* =====================================
-       CONTENT AREA (NEW)
-    ===================================== */
     .content-wrapper {
       padding: 60px 40px;
       max-width: 1400px;
@@ -353,7 +315,7 @@ $cart_count = $cart_data['total'] ?? 0;
       margin-bottom: 30px;
     }
 
-    .btn-menu {
+    .btn-menu, .btn-login {
       display: inline-block;
       padding: 14px 35px;
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
@@ -366,9 +328,10 @@ $cart_count = $cart_data['total'] ?? 0;
       transition: all 0.3s ease;
       border: none;
       cursor: pointer;
+      margin: 0 10px;
     }
 
-    .btn-menu:hover {
+    .btn-menu:hover, .btn-login:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
     }
@@ -380,6 +343,37 @@ $cart_count = $cart_data['total'] ?? 0;
       50% {
         transform: translateY(-10px);
       }
+    }
+
+    /* ===== LOGIN REQUIRED BOX ===== */
+    .login-required-box {
+      background: white;
+      border-radius: 20px;
+      padding: 50px 40px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 10px 40px rgba(123,44,191,0.15);
+    }
+
+    .login-required-box .icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    .login-required-box h3 {
+      font-size: 28px;
+      color: var(--primary-purple);
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .login-required-box p {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 30px;
     }
 
     /* ===== ORDER LIST ===== */
@@ -507,9 +501,6 @@ $cart_count = $cart_data['total'] ?? 0;
       box-shadow: 0 4px 15px rgba(123, 44, 191, 0.4);
     }
 
-    /* =====================================
-       FOOTER (ENHANCED)
-    ===================================== */
     footer {
       margin-top: auto;
       background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
@@ -539,9 +530,6 @@ $cart_count = $cart_data['total'] ?? 0;
       line-height: 1.6;
     }
 
-    /* =====================================
-       RESPONSIVE DESIGN
-    ===================================== */
     @media (max-width: 1024px) {
       header {
         padding: 16px 24px;
@@ -611,7 +599,7 @@ $cart_count = $cart_data['total'] ?? 0;
       }
 
       .banner {
-        min-height: 280px;
+        min-height: 240px;
         padding: 30px 16px;
       }
 
@@ -621,11 +609,6 @@ $cart_count = $cart_data['total'] ?? 0;
 
       .banner p {
         font-size: 1rem;
-      }
-
-      .section-header {
-        font-size: 24px;
-        padding: 20px 16px;
       }
 
       .content-wrapper {
@@ -659,12 +642,15 @@ $cart_count = $cart_data['total'] ?? 0;
         height: 24px;
         font-size: 11px;
       }
+
+      .login-required-box {
+        padding: 40px 25px;
+      }
     }
 
   </style>
 
   <script>
-  // Add scroll effect to floating cart
   window.addEventListener('scroll', function() {
     const floatingCart = document.querySelector('.floating-cart');
     if (floatingCart && window.scrollY > 100) {
@@ -679,6 +665,7 @@ $cart_count = $cart_data['total'] ?? 0;
 <body>
 
 <!-- FLOATING CART BUTTON -->
+<?php if ($is_logged_in): ?>
 <div class="floating-cart">
   <a href="../keranjang.php" class="cart-button" title="Lihat Keranjang">
     <div class="cart-icon">🛒</div>
@@ -687,6 +674,7 @@ $cart_count = $cart_data['total'] ?? 0;
     </span>
   </a>
 </div>
+<?php endif; ?>
 
 <header>
   <div class="logo-container">
@@ -699,24 +687,37 @@ $cart_count = $cart_data['total'] ?? 0;
     <a href="../menu.php">Menu</a>
     <a href="testi.php">Testimoni</a>
     <a href="pesanan.php" class="active">Pesanan saya</a>
-    <a href="contact.html">Hubungi kami</a>
+    <a href="contact.php">Hubungi kami</a>
     <a href="../about.html">Tentang kami</a>
-    <a href="../logout.php">Logout</a>
+    <?php if ($is_logged_in): ?>
+      <a href="../logout.php">Logout</a>
+    <?php else: ?>
+      <a href="../login.php">Login</a>
+    <?php endif; ?>
   </nav>
 </header>
 
 <div class="banner">
   <div class="banner-content">
-    <h2>Riwayat Pesanan Saya</h2>
+    <h2>Riwayat Pesanan</h2>
     <p>Lihat dan kelola semua pesanan Anda di sini</p>
   </div>
 </div>
 
-<h2 class="section-header">DAFTAR PESANAN</h2>
-
 <div class="content-wrapper">
-  <?php if (mysqli_num_rows($query_pesanan) == 0): ?>
-    <!-- EMPTY STATE -->
+  <?php if (!$is_logged_in): ?>
+    <!-- BELUM LOGIN -->
+    <div class="login-required-box">
+      <div class="icon">🔐</div>
+      <h3>Login Diperlukan</h3>
+      <p>Untuk melihat riwayat pesanan Anda, silakan login terlebih dahulu. Belum punya akun? Daftar sekarang dan nikmati kemudahan berbelanja dengan kami!</p>
+      <div>
+        <a href="../login.php" class="btn-login">Login</a>
+        <a href="../register.php" class="btn-menu">Daftar</a>
+      </div>
+    </div>
+  <?php elseif (mysqli_num_rows($query_pesanan) == 0): ?>
+    <!-- SUDAH LOGIN TAPI BELUM ADA PESANAN -->
     <div class="empty-state">
       <div class="empty-icon">📦</div>
       <h3>Belum Ada Pesanan</h3>
@@ -724,7 +725,7 @@ $cart_count = $cart_data['total'] ?? 0;
       <a href="../menu.php" class="btn-menu">Lihat Menu Kami</a>
     </div>
   <?php else: ?>
-    <!-- ORDER LIST -->
+    <!-- SUDAH LOGIN DAN ADA PESANAN -->
     <div class="orders-grid">
       <?php while ($pesanan = mysqli_fetch_assoc($query_pesanan)): ?>
         <div class="order-card">
@@ -737,12 +738,8 @@ $cart_count = $cart_data['total'] ?? 0;
 
           <div class="order-info">
             <div class="order-info-row">
-              <span class="order-info-label">📅 Tanggal Pesanan:</span>
-              <span class="order-info-value"><?= date('d M Y', strtotime($pesanan['tanggal_pesanan'])) ?></span>
-            </div>
-            <div class="order-info-row">
               <span class="order-info-label">🎉 Tanggal Acara:</span>
-              <span class="order-info-value"><?= date('d M Y', strtotime($pesanan['tanggal_acara'])) ?></span>
+              <span class="order-info-value"><?= date('d M Y', strtotime($pesanan['tanggal_pesanan'])) ?></span>
             </div>
             <div class="order-info-row">
               <span class="order-info-label">💳 Pembayaran:</span>

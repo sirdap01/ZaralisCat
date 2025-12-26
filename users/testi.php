@@ -534,7 +534,7 @@ if (isset($_SESSION['id_pengguna'])) {
     <a href="../menu.php">Menu</a>
     <a href="testi.php" class="active">Testimoni</a>
     <a href="pesanan.php">Pesanan saya</a>
-    <a href="contact.html">Hubungi kami</a>
+    <a href="contact.php">Hubungi kami</a>
     <a href="../about.html">Tentang kami</a>
     <a href="<?= isset($_SESSION['id_pengguna']) ? '../logout.php' : '../login.php' ?>">
       <?= isset($_SESSION['id_pengguna']) ? 'Logout' : 'Login' ?>

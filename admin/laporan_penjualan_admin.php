@@ -10,25 +10,25 @@ if ($filter == "minggu") {
     $sql = "
         SELECT * FROM pesanan
         WHERE status='Lunas'
-        AND tanggal >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-        ORDER BY tanggal DESC
+        AND tanggal_pesanan >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        ORDER BY tanggal_pesanan DESC
     ";
     $periode_text = "7 Hari Terakhir";
 } elseif ($filter == "bulan") {
     $sql = "
         SELECT * FROM pesanan
         WHERE status='Lunas'
-        AND MONTH(tanggal)=MONTH(CURDATE())
-        AND YEAR(tanggal)=YEAR(CURDATE())
-        ORDER BY tanggal DESC
+        AND MONTH(tanggal_pesanan)=MONTH(CURDATE())
+        AND YEAR(tanggal_pesanan)=YEAR(CURDATE())
+        ORDER BY tanggal_pesanan DESC
     ";
     $periode_text = "Bulan Ini";
 } else { // tahun
     $sql = "
         SELECT * FROM pesanan
         WHERE status='Lunas'
-        AND YEAR(tanggal)=YEAR(CURDATE())
-        ORDER BY tanggal DESC
+        AND YEAR(tanggal_pesanan)=YEAR(CURDATE())
+        ORDER BY tanggal_pesanan DESC
     ";
     $periode_text = "Tahun Ini";
 }
@@ -99,9 +99,9 @@ if(mysqli_num_rows($check_table) > 0) {
         FROM detail_pesanan dp
         JOIN pesanan p ON dp.$pesanan_id_col = p.id
         WHERE p.status = 'Lunas'
-        " . ($filter == "minggu" ? "AND p.tanggal >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)" : 
-             ($filter == "bulan" ? "AND MONTH(p.tanggal)=MONTH(CURDATE()) AND YEAR(p.tanggal)=YEAR(CURDATE())" : 
-              "AND YEAR(p.tanggal)=YEAR(CURDATE())")) . "
+        " . ($filter == "minggu" ? "AND p.tanggal_pesanan>= DATE_SUB(CURDATE(), INTERVAL 7 DAY)" : 
+             ($filter == "bulan" ? "AND MONTH(p.tanggal_pesanan)=MONTH(CURDATE()) AND YEAR(p.tanggal_pesanan)=YEAR(CURDATE())" : 
+              "AND YEAR(p.tanggal_pesanan)=YEAR(CURDATE())")) . "
         GROUP BY dp.$produk_col
         ORDER BY total_terjual DESC
         LIMIT 5

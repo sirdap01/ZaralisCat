@@ -29,7 +29,7 @@ if (!empty($where)) {
 
 $sql .= " ORDER BY id DESC";
 
-$pesanan = mysqli_query($conn, $sql);
+$pesanan = mysqli_query($conn, "SELECT * FROM pesanan ORDER BY id_pesanan DESC");
 
 if (!$pesanan) {
     die("Query Error : " . mysqli_error($conn));
