@@ -1033,7 +1033,7 @@ function closeToast() {
         <a href="users/testi.php">Testimoni</a>
         <a href="users/pesanan.php">Pesanan saya</a>
         <a href="users/contact.html">Hubungi kami</a>
-        <a href="about.html">Tentang kami</a>
+        <a href="about.php">Tentang kami</a>
         <a href="logout.php">Logout</a>
     </nav>
 </header>

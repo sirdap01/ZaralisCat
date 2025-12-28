@@ -66,7 +66,7 @@ if (($metode_pembayaran === 'QRIS' || $metode_pembayaran === 'Transfer') && isse
         $bukti_transfer_filename = 'bukti_' . time() . '_' . uniqid() . '.' . $file_ext;
         
         // Set upload directory (relative from proses_checkout.php in users/checkout/)
-        $upload_dir = '../../uploads/bukti_transfer/';
+        $upload_dir = 'uploads/bukti_transfer/';
         
         // Create directory if not exists
         if (!is_dir($upload_dir)) {
@@ -248,8 +248,8 @@ try {
     mysqli_rollback($koneksi);
     
     // Delete uploaded file if exists
-    if ($bukti_transfer_filename && file_exists('../../uploads/bukti_transfer/' . $bukti_transfer_filename)) {
-        unlink('../../uploads/bukti_transfer/' . $bukti_transfer_filename);
+    if ($bukti_transfer_filename && file_exists('uploads/bukti_transfer/' . $bukti_transfer_filename)) {
+        unlink('uploads/bukti_transfer/' . $bukti_transfer_filename);
     }
     
     $_SESSION['error'] = $e->getMessage();

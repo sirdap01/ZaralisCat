@@ -3,7 +3,7 @@ include 'koneksi.php';
 $id = $_GET['id'];
 
 $p = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT * FROM pesanan WHERE id=$id"));
+    "SELECT * FROM pesanan WHERE id_pesanan=$id"));
 
 $d = mysqli_query($conn,"
     SELECT pr.nama, dt.qty, dt.harga
@@ -17,7 +17,7 @@ $d = mysqli_query($conn,"
 
 <h2>INVOICE</h2>
 Nama: <?= $p['nama_pelanggan'] ?><br>
-Tanggal: <?= $p['tanggal'] ?><br><br>
+Tanggal: <?= $p['tanggal_pesanan'] ?><br><br>
 
 <table border="1" cellpadding="8">
 <tr><th>Produk</th><th>Qty</th><th>Harga</th></tr>

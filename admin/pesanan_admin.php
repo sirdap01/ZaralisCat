@@ -719,6 +719,7 @@ tbody tr:last-child td {
         </div>
 
         <!-- TABLE -->
+        <!-- TABLE -->
         <div class="table-container">
             <div class="table-wrapper">
                 <table>
@@ -742,23 +743,23 @@ tbody tr:last-child td {
                             ?>
                             <tr>
                                 <td><?= $no++ ?></td>
-                                <td><?= $p['tanggal'] ?></td>
-                                <td><strong><?= $p['nama_pelanggan'] ?></strong></td>
-                                <td><?= $p['metode_pembayaran'] ?></td>
+                                <td><?= date('d M Y', strtotime($p['tanggal_pesanan'])) ?></td>
+                                <td><strong><?= htmlspecialchars($p['nama_pelanggan']) ?></strong></td>
+                                <td><?= htmlspecialchars($p['metode_pembayaran']) ?></td>
                                 <td><strong>Rp <?= number_format($p['total_harga'], 0, ',', '.') ?></strong></td>
                                 <td>
                                     <span class="status-badge status-<?= strtolower($p['status']) ?>">
-                                        <?= $p['status'] ?>
+                                        <?= htmlspecialchars($p['status']) ?>
                                     </span>
                                 </td>
                                 <td class="aksi">
-                                    <a href="edit_status_pesanan.php?id=<?= $p['id'] ?>" class="btn-aksi btn-edit">
+                                    <a href="edit_status_pesanan.php?id=<?= $p['id_pesanan'] ?>" class="btn-aksi btn-edit">
                                         ✏️ Edit
                                     </a>
-                                    <a href="detail_pesanan_admin.php?id=<?= $p['id'] ?>" class="btn-aksi btn-detail">
+                                    <a href="detail_pesanan_admin.php?id=<?= $p['id_pesanan'] ?>" class="btn-aksi btn-detail">
                                         👁️ Detail
                                     </a>
-                                    <a href="cetak_invoice.php?id=<?= $p['id'] ?>" class="btn-aksi btn-cetak" target="_blank">
+                                    <a href="cetak_invoice.php?id=<?= $p['id_pesanan'] ?>" class="btn-aksi btn-cetak" target="_blank">
                                         🖨️ Cetak
                                     </a>
                                 </td>

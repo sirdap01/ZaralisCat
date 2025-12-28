@@ -1,6 +1,13 @@
-<?php $host = "127.0.0.1:3307"; 
+<?php 
+$host = "127.0.0.1:3307"; 
 $user = "root"; 
 $pass = ""; 
 $db   = "zaralis_catering"; 
 $conn = mysqli_connect($host, $user, $pass, $db); 
-if (!$conn) { die("Koneksi database gagal: " . mysqli_connect_error()); } ?>
+
+if (!$conn) { 
+    die("Koneksi database gagal: " . mysqli_connect_error()); 
+}
+
+$koneksi = $conn;
+?>

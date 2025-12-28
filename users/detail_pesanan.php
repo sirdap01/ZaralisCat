@@ -605,7 +605,7 @@ footer {
         <a href="testi.php">Testimoni</a>
         <a href="pesanan.php" class="active">Pesanan saya</a>
         <a href="contact.php">Hubungi kami</a>
-        <a href="../about.html">Tentang kami</a>
+        <a href="../about.php">Tentang kami</a>
         <a href="../logout.php">Logout</a>
     </nav>
 </header>

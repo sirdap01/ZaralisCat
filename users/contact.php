@@ -1,3 +1,21 @@
+<?php
+session_start();
+include '../includes/config.php';
+
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['id_pengguna']);
+
+// Get cart count if logged in
+$cart_count = 0;
+if ($is_logged_in) {
+    $id_pengguna = (int) $_SESSION['id_pengguna'];
+    $cart_result = mysqli_query($koneksi, "SELECT SUM(jumlah) as total FROM keranjang WHERE id_pengguna = $id_pengguna");
+    if ($cart_result) {
+        $cart_data = mysqli_fetch_assoc($cart_result);
+        $cart_count = $cart_data['total'] ?? 0;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -99,6 +117,61 @@
     nav a.active {
       background-color: rgba(255, 215, 0, 0.2);
       color: var(--secondary-gold);
+    }
+
+    /* ===== FLOATING CART BUTTON ===== */
+    .floating-cart {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+    }
+
+    .cart-button {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid var(--secondary-gold);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .cart-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(123, 44, 191, 0.5);
+    }
+
+    .cart-icon {
+      font-size: 32px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: linear-gradient(135deg, #F44336, #E57373);
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+      border: 2px solid white;
+    }
+
+    .cart-badge.empty {
+      display: none;
     }
 
     /* =====================================
@@ -452,6 +525,20 @@
       footer {
         padding: 24px 16px;
       }
+
+      .floating-cart {
+        bottom: 20px;
+        right: 20px;
+      }
+
+      .cart-button {
+        width: 60px;
+        height: 60px;
+      }
+
+      .cart-icon {
+        font-size: 28px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -477,12 +564,33 @@
         width: 100%;
         padding: 14px 20px;
       }
+
+      .cart-button {
+        width: 55px;
+        height: 55px;
+      }
+
+      .cart-icon {
+        font-size: 24px;
+      }
     }
 
   </style>
 
 </head>
 <body>
+
+<!-- FLOATING CART BUTTON (Only if logged in) -->
+<?php if ($is_logged_in): ?>
+<div class="floating-cart">
+  <a href="keranjang/keranjang.php" class="cart-button" title="Lihat Keranjang">
+    <div class="cart-icon">🛒</div>
+    <span class="cart-badge <?= $cart_count == 0 ? 'empty' : '' ?>">
+      <?= $cart_count ?>
+    </span>
+  </a>
+</div>
+<?php endif; ?>
 
 <header>
   <div class="logo-container">
@@ -496,8 +604,10 @@
     <a href="testi.php">Testimoni</a>
     <a href="pesanan.php">Pesanan saya</a>
     <a href="contact.php" class="active">Hubungi kami</a>
-    <a href="../about.html">Tentang kami</a>
-    <a href="../login.php">Login</a>
+    <a href="../about.php">Tentang kami</a>
+    <a href="<?= $is_logged_in ? '../logout.php' : '../login.php' ?>">
+      <?= $is_logged_in ? 'Logout' : 'Login' ?>
+    </a>
   </nav>
 </header>
 
@@ -512,19 +622,19 @@
   <div class="info-card">
     <div class="info-icon">📞</div>
     <h4>Telepon</h4>
-    <p>Hubungi kami untuk konsultasi dan pemesanan</p>
+    <p>+62 812-3456-7890<br>Senin - Sabtu: 08:00 - 20:00</p>
   </div>
   
   <div class="info-card">
     <div class="info-icon">📧</div>
     <h4>Email</h4>
-    <p>Kirimkan pertanyaan Anda melalui email</p>
+    <p>info@zaraliscatering.com<br>Respons dalam 24 jam</p>
   </div>
   
   <div class="info-card">
     <div class="info-icon">📍</div>
     <h4>Lokasi</h4>
-    <p>Melayani area Jakarta dan sekitarnya</p>
+    <p>Jakarta Selatan<br>Melayani Jabodetabek</p>
   </div>
 </div>
 
@@ -534,27 +644,29 @@
     <p>Isi formulir di bawah ini dan kami akan segera menghubungi Anda</p>
   </div>
 
-  <div class="form-group">
-    <label>Nama Lengkap</label>
-    <input type="text" placeholder="Masukkan nama lengkap Anda">
-  </div>
+  <form action="proses_contact.php" method="POST">
+    <div class="form-group">
+      <label>Nama Lengkap <span style="color: #F44336;">*</span></label>
+      <input type="text" name="nama" placeholder="Masukkan nama lengkap Anda" required>
+    </div>
 
-  <div class="form-group">
-    <label>Nomor Telepon</label>
-    <input type="tel" placeholder="08xxxxxxxxxx">
-  </div>
+    <div class="form-group">
+      <label>Nomor Telepon <span style="color: #F44336;">*</span></label>
+      <input type="tel" name="no_telepon" placeholder="08xxxxxxxxxx" required>
+    </div>
 
-  <div class="form-group">
-    <label>Email</label>
-    <input type="email" placeholder="contoh@email.com">
-  </div>
+    <div class="form-group">
+      <label>Email <span style="color: #F44336;">*</span></label>
+      <input type="email" name="email" placeholder="contoh@email.com" required>
+    </div>
 
-  <div class="form-group">
-    <label>Pesan Anda</label>
-    <textarea placeholder="Tulis pesan Anda di sini..."></textarea>
-  </div>
+    <div class="form-group">
+      <label>Pesan Anda <span style="color: #F44336;">*</span></label>
+      <textarea name="pesan" placeholder="Tulis pesan Anda di sini..." required></textarea>
+    </div>
 
-  <button type="submit">Kirim Pesan</button>
+    <button type="submit">Kirim Pesan</button>
+  </form>
 </div>
 
 <footer>

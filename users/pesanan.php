@@ -688,7 +688,7 @@ if ($is_logged_in) {
     <a href="testi.php">Testimoni</a>
     <a href="pesanan.php" class="active">Pesanan saya</a>
     <a href="contact.php">Hubungi kami</a>
-    <a href="../about.html">Tentang kami</a>
+    <a href="../about.php">Tentang kami</a>
     <?php if ($is_logged_in): ?>
       <a href="../logout.php">Logout</a>
     <?php else: ?>

@@ -1,3 +1,10 @@
+<?php
+session_start();
+include 'includes/config.php';
+
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['id_pengguna']);
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -100,6 +107,8 @@
       background-color: rgba(255, 215, 0, 0.2);
       color: var(--secondary-gold);
     }
+
+
 
     /* =====================================
        BANNER FOTO BELAKANG
@@ -341,10 +350,14 @@
     <a href="index.php">Home</a>
     <a href="menu.php">Menu</a>
     <a href="users/testi.php">Testimoni</a>
-    <a href="users/pesanan.php">Pesanan saya</a>
+    <a href="users/pesanan.php">Pesanan</a>
     <a href="users/contact.php">Hubungi kami</a>
-    <a href="about.html" class="active">Tentang kami</a>
-    <a href="login.php">Login</a>
+    <a href="about.php" class="active">Tentang kami</a>
+    <?php if (isset($_SESSION['id_pengguna'])): ?>
+      <a href="logout.php">Logout</a>
+    <?php else: ?>
+      <a href="login.php">Login</a>
+    <?php endif; ?>
   </nav>
 </header>
 

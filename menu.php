@@ -862,7 +862,7 @@ if (isset($_SESSION['id_pengguna'])) {
     <a href="users/testi.php">Testimoni</a>
     <a href="users/pesanan.php">Pesanan saya</a>
     <a href="users/contact.php">Hubungi kami</a>
-    <a href="about.html">Tentang kami</a>
+    <a href="about.php">Tentang kami</a>
     <a href="<?= isset($_SESSION['id_pengguna']) ? 'logout.php' : 'login.php' ?>">
       <?= isset($_SESSION['id_pengguna']) ? 'Logout' : 'Login' ?>
     </a>
