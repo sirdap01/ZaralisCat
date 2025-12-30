@@ -350,7 +350,7 @@ $is_logged_in = isset($_SESSION['id_pengguna']);
     <a href="index.php">Home</a>
     <a href="menu.php">Menu</a>
     <a href="users/testi.php">Testimoni</a>
-    <a href="users/pesanan.php">Pesanan</a>
+    <a href="users/pesanan.php">Pesanan saya</a>
     <a href="users/contact.php">Hubungi kami</a>
     <a href="about.php" class="active">Tentang kami</a>
     <?php if (isset($_SESSION['id_pengguna'])): ?>

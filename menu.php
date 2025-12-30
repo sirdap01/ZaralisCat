@@ -585,22 +585,187 @@ if (isset($_SESSION['id_pengguna'])) {
       border-radius: 10px;
     }
 
-    .btn-detail {
-      display: inline-block;
-      padding: 12px 30px;
-      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(123,44,191,0.3);
+    /* ===== QUANTITY CONTROLS ===== */
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      padding: 12px;
+      background: #F5F5F5;
+      border-radius: 12px;
     }
 
-    .btn-detail:hover {
+    .quantity-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    .quantity-input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-quantity {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+      color: white;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(123, 44, 191, 0.3);
+    }
+
+    .btn-quantity:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(123,44,191,0.4);
+      box-shadow: 0 4px 12px rgba(123, 44, 191, 0.4);
+    }
+
+    .btn-quantity:active {
+      transform: translateY(0);
+    }
+
+    .btn-quantity:disabled {
+      background: #BDBDBD;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .quantity-value {
+      width: 50px;
+      height: 36px;
+      border: 2px solid #E0E0E0;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      background: white;
+    }
+
+    .quantity-value:focus {
+      outline: none;
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.1);
+    }
+
+    /* ===== ADD TO CART BUTTON ===== */
+    .btn-add-cart {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #00C853, #00E676);
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+      width: 100%;
+    }
+
+    .btn-add-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 200, 83, 0.4);
+    }
+
+    .btn-add-cart:active {
+      transform: translateY(0);
+    }
+
+    /* ===== NOTIFICATION TOAST ===== */
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      background: white;
+      padding: 20px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      gap: 15px;
+      z-index: 10000;
+      animation: slideInRight 0.4s ease;
+      min-width: 320px;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    .toast.success {
+      border-left: 4px solid #00C853;
+    }
+
+    .toast.error {
+      border-left: 4px solid #F44336;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .toast-message {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s ease;
+    }
+
+    .toast-close:hover {
+      color: #333;
     }
 
     .empty-state {
@@ -786,6 +951,11 @@ if (isset($_SESSION['id_pengguna'])) {
         gap: 20px;
       }
 
+      .toast {
+        right: 16px;
+        min-width: 280px;
+      }
+
       footer {
         padding: 24px 16px;
       }
@@ -833,10 +1003,110 @@ if (isset($_SESSION['id_pengguna'])) {
       floatingCart.classList.remove('scrolled');
     }
   });
+
+  // Quantity controls
+  function updateQuantity(productId, action) {
+    const input = document.getElementById('qty-' + productId);
+    let currentValue = parseInt(input.value) || 1;
+    
+    if (action === 'minus' && currentValue > 1) {
+      currentValue--;
+    } else if (action === 'plus' && currentValue < 100) {
+      currentValue++;
+    }
+    
+    input.value = currentValue;
+  }
+
+  // Add to cart
+  function addToCart(productId, productName) {
+    const quantity = document.getElementById('qty-' + productId).value;
+    
+    // Check if user is logged in
+    <?php if (!isset($_SESSION['id_pengguna'])): ?>
+      showToast('error', 'Login Required', 'Silakan login terlebih dahulu untuk menambahkan ke keranjang');
+      setTimeout(() => {
+        window.location.href = 'login.php';
+      }, 1500);
+      return;
+    <?php endif; ?>
+    
+    // Send AJAX request
+    const formData = new FormData();
+    formData.append('id_produk', productId);
+    formData.append('jumlah', quantity);
+    
+    fetch('proses_tambah_keranjang.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showToast('success', 'Berhasil!', `${productName} (${quantity}x) ditambahkan ke keranjang`);
+        updateCartBadge(data.cart_count);
+        // Reset quantity to 1
+        document.getElementById('qty-' + productId).value = 1;
+      } else {
+        showToast('error', 'Gagal!', data.message || 'Terjadi kesalahan');
+      }
+    })
+    .catch(error => {
+      showToast('error', 'Error!', 'Terjadi kesalahan koneksi');
+      console.error('Error:', error);
+    });
+  }
+
+  // Show toast notification
+  function showToast(type, title, message) {
+    const toast = document.getElementById('toast');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toast.className = `toast ${type}`;
+    toastIcon.textContent = type === 'success' ? '✓' : '✕';
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Update cart badge
+  function updateCartBadge(count) {
+    const badge = document.getElementById('cartBadge');
+    if (badge) {
+      badge.textContent = count;
+      if (count > 0) {
+        badge.classList.remove('empty');
+      } else {
+        badge.classList.add('empty');
+      }
+    }
+  }
+
+  // Close toast
+  function closeToast() {
+    document.getElementById('toast').classList.remove('show');
+  }
   </script>
 </head>
 
 <body>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast">
+  <div id="toastIcon" class="toast-icon"></div>
+  <div class="toast-content">
+    <div id="toastTitle" class="toast-title"></div>
+    <div id="toastMessage" class="toast-message"></div>
+  </div>
+  <button class="toast-close" onclick="closeToast()">×</button>
+</div>
 
 <!-- FLOATING CART BUTTON (only if logged in) -->
 <?php if (isset($_SESSION['id_pengguna'])): ?>
@@ -852,12 +1122,12 @@ if (isset($_SESSION['id_pengguna'])) {
 
 <header>
   <div class="logo-container">
-    <img src="../gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
+    <img src="gambar/logo.png" alt="Logo Zarali's Catering" class="logo">
     <h1>Zarali's Catering</h1>
   </div>
 
   <nav>
-    <a href="../index.php">Home</a>
+    <a href="index.php">Home</a>
     <a href="menu.php" class="active">Menu</a>
     <a href="users/testi.php">Testimoni</a>
     <a href="users/pesanan.php">Pesanan saya</a>
@@ -881,7 +1151,7 @@ if (isset($_SESSION['id_pengguna'])) {
 <section class="kategori">
   <a href="menu.php?kategori=Paket Besar" class="card">
     <div class="card-image-container">
-      <img src="../gambar/paket_besar.jpg" alt="Paket Besar">
+      <img src="gambar/paket_besar.jpg" alt="Paket Besar">
     </div>
     <div class="card-content">
       <h3>Paket Besar</h3>
@@ -891,7 +1161,7 @@ if (isset($_SESSION['id_pengguna'])) {
 
   <a href="menu.php?kategori=Kue Satuan" class="card">
     <div class="card-image-container">
-      <img src="../gambar/kue_satuan.jpg" alt="Kue Satuan">
+      <img src="gambar/kue_satuan.jpg" alt="Kue Satuan">
     </div>
     <div class="card-content">
       <h3>Kue Satuan</h3>
@@ -901,7 +1171,7 @@ if (isset($_SESSION['id_pengguna'])) {
 
   <a href="menu.php?kategori=Minuman" class="card">
     <div class="card-image-container">
-      <img src="../gambar/minuman.jpg" alt="Minuman">
+      <img src="gambar/minuman.jpg" alt="Minuman">
     </div>
     <div class="card-content">
       <h3>Minuman</h3>
@@ -948,7 +1218,28 @@ if (isset($_SESSION['id_pengguna'])) {
           <h3><?= htmlspecialchars($produk['nama']); ?></h3>
           <p class="product-description"><?= htmlspecialchars($produk['deskripsi']); ?></p>
           <div class="product-price">Rp <?= number_format($produk['harga'], 0, ',', '.'); ?></div>
-          <a href="#" class="btn-detail">Pesan</a>
+          
+          <!-- QUANTITY CONTROLS -->
+          <div class="quantity-controls">
+            <span class="quantity-label">Jumlah:</span>
+            <div class="quantity-input-group">
+              <button type="button" class="btn-quantity" onclick="updateQuantity(<?= $produk['id'] ?>, 'minus')">−</button>
+              <input type="number" 
+                     id="qty-<?= $produk['id'] ?>" 
+                     class="quantity-value" 
+                     value="1" 
+                     min="1" 
+                     max="100" 
+                     readonly>
+              <button type="button" class="btn-quantity" onclick="updateQuantity(<?= $produk['id'] ?>, 'plus')">+</button>
+            </div>
+          </div>
+
+          <!-- ADD TO CART BUTTON -->
+          <button class="btn-add-cart" onclick="addToCart(<?= $produk['id'] ?>, '<?= htmlspecialchars($produk['nama']) ?>')">
+            <span>🛒</span>
+            <span>Tambah ke Keranjang</span>
+          </button>
         </div>
       <?php endwhile; ?>
     </div>
