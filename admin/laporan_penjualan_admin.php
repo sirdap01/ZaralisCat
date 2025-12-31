@@ -9,7 +9,7 @@ $filter = $_GET['filter'] ?? "minggu";
 if ($filter == "minggu") {
     $sql = "
         SELECT * FROM pesanan
-        WHERE status='Lunas'
+        WHERE status IN ('Lunas', 'Selesai')
         AND tanggal_pesanan >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
         ORDER BY tanggal_pesanan DESC
     ";
@@ -17,7 +17,7 @@ if ($filter == "minggu") {
 } elseif ($filter == "bulan") {
     $sql = "
         SELECT * FROM pesanan
-        WHERE status='Lunas'
+        WHERE status IN ('Lunas', 'Selesai')
         AND MONTH(tanggal_pesanan)=MONTH(CURDATE())
         AND YEAR(tanggal_pesanan)=YEAR(CURDATE())
         ORDER BY tanggal_pesanan DESC
@@ -26,7 +26,7 @@ if ($filter == "minggu") {
 } else { // tahun
     $sql = "
         SELECT * FROM pesanan
-        WHERE status='Lunas'
+        WHERE status IN ('Lunas', 'Selesai')
         AND YEAR(tanggal_pesanan)=YEAR(CURDATE())
         ORDER BY tanggal_pesanan DESC
     ";
@@ -67,48 +67,70 @@ if ($jumlah_transaksi > 0) {
 /* ===============================
    HITUNG PRODUK TERLARIS
 ================================ */
-// Check if detail_pesanan table exists and get the correct column names
-$check_table = mysqli_query($conn, "SHOW TABLES LIKE 'detail_pesanan'");
+// Check if pesanan_detail table exists (note: using pesanan_detail based on your schema)
+$check_table = mysqli_query($conn, "SHOW TABLES LIKE 'pesanan_detail'");
 
 if(mysqli_num_rows($check_table) > 0) {
-    // Table exists, let's check the structure
-    $check_columns = mysqli_query($conn, "SHOW COLUMNS FROM detail_pesanan");
-    $columns = [];
-    while($col = mysqli_fetch_assoc($check_columns)) {
-        $columns[] = $col['Field'];
-    }
-    
-    // Determine the correct column names
-    $produk_col = 'nama_produk';
-    $jumlah_col = 'jumlah';
-    $subtotal_col = 'subtotal';
-    $pesanan_id_col = 'id_pesanan';
-    
-    if(in_array('produk', $columns)) $produk_col = 'produk';
-    if(in_array('qty', $columns)) $jumlah_col = 'qty';
-    if(in_array('quantity', $columns)) $jumlah_col = 'quantity';
-    if(in_array('harga', $columns)) $subtotal_col = 'harga';
-    if(in_array('pesanan_id', $columns)) $pesanan_id_col = 'pesanan_id';
-    if(in_array('id_order', $columns)) $pesanan_id_col = 'id_order';
-    
+    // Use pesanan_detail table
     $produk_query = mysqli_query($conn, "
         SELECT 
-            dp.$produk_col as nama_produk,
-            SUM(dp.$jumlah_col) as total_terjual,
-            SUM(dp.$subtotal_col) as total_pendapatan
-        FROM detail_pesanan dp
-        JOIN pesanan p ON dp.$pesanan_id_col = p.id
-        WHERE p.status = 'Lunas'
-        " . ($filter == "minggu" ? "AND p.tanggal_pesanan>= DATE_SUB(CURDATE(), INTERVAL 7 DAY)" : 
+            pd.nama_produk,
+            SUM(pd.qty) as total_terjual,
+            SUM(pd.subtotal) as total_pendapatan
+        FROM pesanan_detail pd
+        JOIN pesanan p ON pd.pesanan_id = p.id_pesanan
+        WHERE p.status IN ('Lunas', 'Selesai')
+        " . ($filter == "minggu" ? "AND p.tanggal_pesanan >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)" : 
              ($filter == "bulan" ? "AND MONTH(p.tanggal_pesanan)=MONTH(CURDATE()) AND YEAR(p.tanggal_pesanan)=YEAR(CURDATE())" : 
               "AND YEAR(p.tanggal_pesanan)=YEAR(CURDATE())")) . "
-        GROUP BY dp.$produk_col
+        GROUP BY pd.nama_produk
         ORDER BY total_terjual DESC
         LIMIT 5
     ");
 } else {
-    // If table doesn't exist, create empty result
-    $produk_query = mysqli_query($conn, "SELECT NULL as nama_produk, 0 as total_terjual, 0 as total_pendapatan LIMIT 0");
+    // Fallback: check for detail_pesanan table
+    $check_table2 = mysqli_query($conn, "SHOW TABLES LIKE 'detail_pesanan'");
+    
+    if(mysqli_num_rows($check_table2) > 0) {
+        // Check column names
+        $check_columns = mysqli_query($conn, "SHOW COLUMNS FROM detail_pesanan");
+        $columns = [];
+        while($col = mysqli_fetch_assoc($check_columns)) {
+            $columns[] = $col['Field'];
+        }
+        
+        // Determine correct column names
+        $produk_col = 'nama_produk';
+        $jumlah_col = 'jumlah';
+        $subtotal_col = 'subtotal';
+        $pesanan_id_col = 'id_pesanan';
+        
+        if(in_array('produk', $columns)) $produk_col = 'produk';
+        if(in_array('qty', $columns)) $jumlah_col = 'qty';
+        if(in_array('quantity', $columns)) $jumlah_col = 'quantity';
+        if(in_array('harga', $columns)) $subtotal_col = 'harga';
+        if(in_array('pesanan_id', $columns)) $pesanan_id_col = 'pesanan_id';
+        if(in_array('id_order', $columns)) $pesanan_id_col = 'id_order';
+        
+        $produk_query = mysqli_query($conn, "
+            SELECT 
+                dp.$produk_col as nama_produk,
+                SUM(dp.$jumlah_col) as total_terjual,
+                SUM(dp.$subtotal_col) as total_pendapatan
+            FROM detail_pesanan dp
+            JOIN pesanan p ON dp.$pesanan_id_col = p.id_pesanan
+            WHERE p.status IN ('Lunas', 'Selesai')
+            " . ($filter == "minggu" ? "AND p.tanggal_pesanan >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)" : 
+                 ($filter == "bulan" ? "AND MONTH(p.tanggal_pesanan)=MONTH(CURDATE()) AND YEAR(p.tanggal_pesanan)=YEAR(CURDATE())" : 
+                  "AND YEAR(p.tanggal_pesanan)=YEAR(CURDATE())")) . "
+            GROUP BY dp.$produk_col
+            ORDER BY total_terjual DESC
+            LIMIT 5
+        ");
+    } else {
+        // No table found
+        $produk_query = mysqli_query($conn, "SELECT NULL as nama_produk, 0 as total_terjual, 0 as total_pendapatan LIMIT 0");
+    }
 }
 ?>
 
@@ -349,6 +371,33 @@ body {
 .btn-filter:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(123, 44, 191, 0.4);
+}
+
+/* ===== INFO BOX (NEW) ===== */
+.info-note {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    border-left: 4px solid #2196F3;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.info-note-icon {
+    font-size: 24px;
+}
+
+.info-note-text {
+    flex: 1;
+    font-size: 13px;
+    color: #1565C0;
+    line-height: 1.5;
+}
+
+.info-note-text strong {
+    font-weight: 700;
 }
 
 /* =====================================
@@ -658,7 +707,7 @@ body {
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo">
+        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo" onerror="this.style.display='none'">
         <div class="sidebar-title">Zarali's Catering</div>
         <div class="sidebar-subtitle">Admin Panel</div>
     </div>
@@ -724,6 +773,14 @@ body {
                 </select>
                 <button class="btn-filter">Tampilkan</button>
             </form>
+
+            <!-- INFO NOTE -->
+            <div class="info-note">
+                <div class="info-note-icon">ℹ️</div>
+                <div class="info-note-text">
+                    <strong>Catatan:</strong> Laporan ini menampilkan transaksi dengan status <strong>"Lunas"</strong> dan <strong>"Selesai"</strong> (pesanan yang sudah dibayar penuh).
+                </div>
+            </div>
         </div>
 
         <!-- STATISTICS CARDS -->
@@ -778,7 +835,7 @@ body {
             </div>
 
             <div class="products-list">
-                <?php if(mysqli_num_rows($produk_query) > 0): ?>
+                <?php if($produk_query && mysqli_num_rows($produk_query) > 0): ?>
                     <?php 
                     $rank = 1;
                     while($prod = mysqli_fetch_assoc($produk_query)): 
@@ -786,7 +843,7 @@ body {
                     <div class="product-item">
                         <div class="product-rank"><?= $rank++ ?></div>
                         <div class="product-info">
-                            <div class="product-name"><?= $prod['nama_produk'] ?></div>
+                            <div class="product-name"><?= htmlspecialchars($prod['nama_produk']) ?></div>
                             <div class="product-stats">Terjual: <?= $prod['total_terjual'] ?> porsi</div>
                         </div>
                         <div class="product-revenue">

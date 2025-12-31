@@ -53,11 +53,12 @@ if (!$query) {
 $total_transaksi = mysqli_num_rows($query);
 
 // GLOBAL STATISTICS (Always show all data - tidak terpengaruh filter)
+// UPDATED: Include both 'Lunas' AND 'Selesai' to match laporan page
 $global_stat_query = mysqli_query($conn, "
     SELECT 
         COUNT(*) as jumlah_global,
-        SUM(CASE WHEN status='Lunas' THEN 1 ELSE 0 END) as jumlah_lunas_global,
-        SUM(CASE WHEN status='Lunas' THEN total_harga ELSE 0 END) as pendapatan_global
+        SUM(CASE WHEN status IN ('Lunas', 'Selesai') THEN 1 ELSE 0 END) as jumlah_lunas_global,
+        SUM(CASE WHEN status IN ('Lunas', 'Selesai') THEN total_harga ELSE 0 END) as pendapatan_global
     FROM pesanan
 ");
 
@@ -71,12 +72,13 @@ $jumlah_lunas_global = $global_stat['jumlah_lunas_global'] ?? 0;
 $pendapatan_global = $global_stat['pendapatan_global'] ?? 0;
 
 // FILTERED STATISTICS (Based on selected filters)
+// UPDATED: Include both 'Lunas' AND 'Selesai' to match laporan page
 $stat_query = mysqli_query($conn, "
     SELECT 
         COUNT(*) as jumlah,
         SUM(total_harga) as total_pendapatan,
-        SUM(CASE WHEN status='Lunas' THEN 1 ELSE 0 END) as jumlah_lunas,
-        SUM(CASE WHEN status='Lunas' THEN total_harga ELSE 0 END) as pendapatan_lunas
+        SUM(CASE WHEN status IN ('Lunas', 'Selesai') THEN 1 ELSE 0 END) as jumlah_lunas,
+        SUM(CASE WHEN status IN ('Lunas', 'Selesai') THEN total_harga ELSE 0 END) as pendapatan_lunas
     FROM pesanan 
     WHERE 1=1 $where_status $where_date $where_metode
 ");
@@ -258,6 +260,33 @@ body {
 ===================================== */
 .content-body {
     padding: 40px;
+}
+
+/* ===== INFO NOTE ===== */
+.info-note {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    border-left: 4px solid #2196F3;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.info-note-icon {
+    font-size: 24px;
+}
+
+.info-note-text {
+    flex: 1;
+    font-size: 13px;
+    color: #1565C0;
+    line-height: 1.5;
+}
+
+.info-note-text strong {
+    font-weight: 700;
 }
 
 /* =====================================
@@ -746,7 +775,7 @@ tbody tr:last-child td {
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo">
+        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo" onerror="this.style.display='none'">
         <div class="sidebar-title">Zarali's Catering</div>
         <div class="sidebar-subtitle">Admin Panel</div>
     </div>
@@ -794,6 +823,14 @@ tbody tr:last-child td {
     <!-- CONTENT BODY -->
     <div class="content-body">
 
+        <!-- INFO NOTE -->
+        <div class="info-note">
+            <div class="info-note-icon">ℹ️</div>
+            <div class="info-note-text">
+                <strong>Catatan:</strong> Total Pendapatan menghitung transaksi dengan status <strong>"Lunas"</strong> dan <strong>"Selesai"</strong> (sama dengan halaman Laporan Penjualan).
+            </div>
+        </div>
+
         <!-- GLOBAL STATISTICS (Always visible) -->
         <div style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05)); border-radius: 15px; padding: 25px; margin-bottom: 30px; border: 2px solid var(--secondary-gold); box-shadow: 0 4px 15px rgba(255,215,0,0.2);">
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
@@ -816,7 +853,7 @@ tbody tr:last-child td {
                 </div>
                 
                 <div style="text-align: center; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                    <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600;">✓ Transaksi Lunas</div>
+                    <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600;">✓ Lunas + Selesai</div>
                     <div style="font-size: 32px; font-weight: 700; color: #2196F3;">
                         <?= $jumlah_lunas_global ?>
                     </div>
@@ -826,11 +863,11 @@ tbody tr:last-child td {
                 </div>
                 
                 <div style="text-align: center; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                    <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600;">💰 Total Pendapatan</div>
+                    <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600;">💰 Total Penjualan</div>
                     <div style="font-size: 28px; font-weight: 700; color: #00C853;">
                         Rp <?= number_format($pendapatan_global, 0, ',', '.') ?>
                     </div>
-                    <div style="font-size: 11px; color: #999; margin-top: 5px;">Dari transaksi lunas</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 5px;">Dari transaksi Lunas + Selesai</div>
                 </div>
             </div>
         </div>
@@ -877,7 +914,7 @@ tbody tr:last-child td {
             <div class="stat-card paid">
                 <div class="stat-card-header">
                     <div class="stat-icon paid">✓</div>
-                    <h4>Transaksi Lunas</h4>
+                    <h4>Lunas + Selesai</h4>
                 </div>
                 <div class="stat-value"><?= $jumlah_lunas ?></div>
                 <div class="stat-subtitle">Dari transaksi yang ditampilkan</div>
@@ -886,12 +923,12 @@ tbody tr:last-child td {
             <div class="stat-card revenue">
                 <div class="stat-card-header">
                     <div class="stat-icon revenue">💰</div>
-                    <h4>Pendapatan</h4>
+                    <h4>Total Penjualan</h4>
                 </div>
                 <div class="stat-value">
                     Rp <?= number_format($pendapatan_lunas, 0, ',', '.') ?>
                 </div>
-                <div class="stat-subtitle">Dari transaksi lunas yang ditampilkan</div>
+                <div class="stat-subtitle">Dari transaksi Lunas + Selesai</div>
             </div>
         </div>
 

@@ -323,8 +323,8 @@ body {
                 <ul>
                     <li><strong>Pending:</strong> Pesanan baru masuk, menunggu konfirmasi</li>
                     <li><strong>Proses:</strong> Pesanan sedang diproses/disiapkan</li>
-                    <li><strong>Selesai:</strong> Pesanan sudah selesai/dikirim</li>
                     <li><strong>Lunas:</strong> Pesanan sudah dibayar lunas</li>
+                    <li><strong>Selesai:</strong> Pesanan sudah selesai/dikirim</li>
                     <li><strong>Batal:</strong> Pesanan dibatalkan</li>
                 </ul>
             </div>

@@ -1,12 +1,40 @@
 <?php
+session_start();
 include 'koneksi.php';
+
+/* =========================
+   SUCCESS/ERROR MESSAGE
+========================= */
+$success_message = $_SESSION['success'] ?? null;
+$error_message = $_SESSION['error'] ?? null;
+unset($_SESSION['success'], $_SESSION['error']);
 
 /* =========================
    HAPUS PRODUK
 ========================= */
 if (isset($_GET['hapus'])) {
     $id = (int) $_GET['hapus'];
-    mysqli_query($conn, "DELETE FROM produk WHERE id=$id");
+    
+    // Get image name before delete
+    $get_image = mysqli_query($conn, "SELECT gambar FROM produk WHERE id=$id");
+    if ($get_image && mysqli_num_rows($get_image) > 0) {
+        $img_data = mysqli_fetch_assoc($get_image);
+        $image_file = $img_data['gambar'];
+        
+        // Delete product
+        $delete = mysqli_query($conn, "DELETE FROM produk WHERE id=$id");
+        
+        if ($delete) {
+            // Delete image file
+            if ($image_file && file_exists("../uploads/produk/$image_file")) {
+                unlink("../uploads/produk/$image_file");
+            }
+            $_SESSION['success'] = "Produk berhasil dihapus!";
+        } else {
+            $_SESSION['error'] = "Gagal menghapus produk!";
+        }
+    }
+    
     header("Location: produk_admin.php");
     exit;
 }
@@ -72,6 +100,41 @@ $kategori_query = mysqli_query($conn, "SELECT DISTINCT kategori FROM produk ORDE
 body {
     background-color: var(--background-light);
     min-height: 100vh;
+}
+
+/* ===== ALERT MESSAGES ===== */
+.alert {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #D4EDDA, #C3E6CB);
+    color: #155724;
+    border-left: 4px solid #28A745;
+}
+
+.alert-error {
+    background: linear-gradient(135deg, #F8D7DA, #F5C6CB);
+    color: #721C24;
+    border-left: 4px solid #DC3545;
 }
 
 /* =====================================
@@ -382,17 +445,6 @@ body {
     overflow: hidden;
 }
 
-.product-category {
-    display: inline-block;
-    padding: 5px 12px;
-    background-color: #F0F0F0;
-    color: #666;
-    border-radius: 15px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
 .product-price {
     font-size: 22px;
     font-weight: 700;
@@ -507,6 +559,10 @@ body {
         margin-left: 0;
     }
 
+    .alert {
+        margin: 20px;
+    }
+
     .content-header {
         flex-direction: column;
         gap: 15px;
@@ -555,7 +611,7 @@ body {
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo">
+        <img src="logo.png" alt="Logo Zarali's Catering" class="sidebar-logo" onerror="this.style.display='none'">
         <div class="sidebar-title">Zarali's Catering</div>
         <div class="sidebar-subtitle">Admin Panel</div>
     </div>
@@ -591,6 +647,21 @@ body {
 <!-- MAIN CONTENT -->
 <div class="main-content">
     
+    <!-- SUCCESS/ERROR MESSAGES -->
+    <?php if ($success_message): ?>
+    <div class="alert alert-success">
+        <span>✅</span>
+        <span><?= htmlspecialchars($success_message) ?></span>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($error_message): ?>
+    <div class="alert alert-error">
+        <span>⚠️</span>
+        <span><?= htmlspecialchars($error_message) ?></span>
+    </div>
+    <?php endif; ?>
+
     <!-- HEADER -->
     <div class="content-header">
         <h2>Manajemen Produk</h2>
