@@ -1,21 +1,3 @@
-<?php
-session_start();
-include '../includes/config.php';
-
-// Check if user is logged in
-$is_logged_in = isset($_SESSION['id_pengguna']);
-
-// Get cart count if logged in
-$cart_count = 0;
-if ($is_logged_in) {
-    $id_pengguna = (int) $_SESSION['id_pengguna'];
-    $cart_result = mysqli_query($koneksi, "SELECT SUM(jumlah) as total FROM keranjang WHERE id_pengguna = $id_pengguna");
-    if ($cart_result) {
-        $cart_data = mysqli_fetch_assoc($cart_result);
-        $cart_count = $cart_data['total'] ?? 0;
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -86,7 +68,7 @@ if ($is_logged_in) {
 
     header h1 {
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1.9rem;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
       letter-spacing: 0.5px;
     }
@@ -117,61 +99,6 @@ if ($is_logged_in) {
     nav a.active {
       background-color: rgba(255, 215, 0, 0.2);
       color: var(--secondary-gold);
-    }
-
-    /* ===== FLOATING CART BUTTON ===== */
-    .floating-cart {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      z-index: 999;
-    }
-
-    .cart-button {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 3px solid var(--secondary-gold);
-      text-decoration: none;
-      position: relative;
-    }
-
-    .cart-button:hover {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 12px 35px rgba(123, 44, 191, 0.5);
-    }
-
-    .cart-icon {
-      font-size: 32px;
-    }
-
-    .cart-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: linear-gradient(135deg, #F44336, #E57373);
-      color: white;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
-      border: 2px solid white;
-    }
-
-    .cart-badge.empty {
-      display: none;
     }
 
     /* =====================================
@@ -359,49 +286,155 @@ if ($is_logged_in) {
     }
 
     /* =====================================
-       CONTACT INFO (NEW)
+       CONTACT INFO (ENHANCED WITH WHATSAPP)
     ===================================== */
     .contact-info {
-      max-width: 800px;
+      max-width: 1000px;
       width: 90%;
-      margin: 0 auto 60px;
+      margin: 60px auto;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
     }
 
     .info-card {
       background: white;
-      padding: 30px 25px;
-      border-radius: 15px;
+      padding: 35px 25px;
+      border-radius: 20px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.08);
       text-align: center;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
       border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .info-card:hover::before {
+      opacity: 1;
     }
 
     .info-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 30px rgba(123, 44, 191, 0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 35px rgba(123, 44, 191, 0.2);
       border-color: var(--accent-purple);
     }
 
     .info-icon {
-      font-size: 36px;
-      margin-bottom: 15px;
+      font-size: 48px;
+      margin-bottom: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .info-card:hover .info-icon {
+      transform: scale(1.15);
     }
 
     .info-card h4 {
-      font-size: 18px;
+      font-size: 20px;
       color: var(--primary-purple);
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       font-weight: 700;
+      position: relative;
+      z-index: 2;
     }
 
     .info-card p {
       color: #666;
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.8;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* WhatsApp Card Special Styling - Full Width */
+    .whatsapp-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      border: 3px solid #25D366;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 40px 50px;
+    }
+
+    .whatsapp-card::before {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+    }
+
+    .whatsapp-card:hover {
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 15px 45px rgba(37, 211, 102, 0.4);
+      border-color: #128C7E;
+    }
+
+    .whatsapp-content {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .whatsapp-card .info-icon {
+      font-size: 64px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      margin-bottom: 0;
+    }
+
+    .whatsapp-text {
+      text-align: left;
+    }
+
+    .whatsapp-card h4 {
+      color: white;
+      font-size: 28px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 8px;
+    }
+
+    .whatsapp-card p {
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      font-size: 15px;
+      margin-bottom: 0;
+    }
+
+    .whatsapp-badge {
+      padding: 12px 30px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 25px;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .whatsapp-card:hover .whatsapp-badge {
+      background: white;
+      color: #25D366;
+      transform: scale(1.05);
     }
 
     /* =====================================
@@ -512,9 +545,41 @@ if ($is_logged_in) {
       }
 
       .contact-info {
-        width: 95%;
+        grid-template-columns: 1fr;
         gap: 20px;
-        margin-bottom: 40px;
+      }
+
+      .info-card {
+        padding: 30px 20px;
+      }
+
+      .whatsapp-card {
+        flex-direction: column;
+        gap: 20px;
+        padding: 35px 25px;
+      }
+
+      .whatsapp-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .whatsapp-text {
+        text-align: center;
+      }
+
+      .whatsapp-card h4 {
+        font-size: 22px;
+      }
+
+      .whatsapp-card p {
+        font-size: 14px;
+      }
+
+      .whatsapp-badge {
+        width: 100%;
+        text-align: center;
       }
 
       button {
@@ -524,20 +589,6 @@ if ($is_logged_in) {
 
       footer {
         padding: 24px 16px;
-      }
-
-      .floating-cart {
-        bottom: 20px;
-        right: 20px;
-      }
-
-      .cart-button {
-        width: 60px;
-        height: 60px;
-      }
-
-      .cart-icon {
-        font-size: 28px;
       }
     }
 
@@ -564,33 +615,12 @@ if ($is_logged_in) {
         width: 100%;
         padding: 14px 20px;
       }
-
-      .cart-button {
-        width: 55px;
-        height: 55px;
-      }
-
-      .cart-icon {
-        font-size: 24px;
-      }
     }
 
   </style>
 
 </head>
 <body>
-
-<!-- FLOATING CART BUTTON (Only if logged in) -->
-<?php if ($is_logged_in): ?>
-<div class="floating-cart">
-  <a href="../keranjang.php" class="cart-button" title="Lihat Keranjang">
-    <div class="cart-icon">🛒</div>
-    <span class="cart-badge <?= $cart_count == 0 ? 'empty' : '' ?>">
-      <?= $cart_count ?>
-    </span>
-  </a>
-</div>
-<?php endif; ?>
 
 <header>
   <div class="logo-container">
@@ -605,9 +635,7 @@ if ($is_logged_in) {
     <a href="pesanan.php">Pesanan saya</a>
     <a href="contact.php" class="active">Hubungi kami</a>
     <a href="../about.php">Tentang kami</a>
-    <a href="<?= $is_logged_in ? '../logout.php' : '../login.php' ?>">
-      <?= $is_logged_in ? 'Logout' : 'Login' ?>
-    </a>
+    <a href="../login.php">Login</a>
   </nav>
 </header>
 
@@ -622,7 +650,7 @@ if ($is_logged_in) {
   <div class="info-card">
     <div class="info-icon">📞</div>
     <h4>Telepon</h4>
-    <p>+62 812-3456-7890<br>Senin - Sabtu: 08:00 - 20:00</p>
+    <p>+62 813-9883-8812<br>Senin - Sabtu: 08:00 - 20:00</p>
   </div>
   
   <div class="info-card">
@@ -634,39 +662,19 @@ if ($is_logged_in) {
   <div class="info-card">
     <div class="info-icon">📍</div>
     <h4>Lokasi</h4>
-    <p>Jakarta Selatan<br>Melayani Jabodetabek</p>
-  </div>
-</div>
-
-<div class="form-wrapper">
-  <div class="form-header">
-    <h3>Kirim Pesan</h3>
-    <p>Isi formulir di bawah ini dan kami akan segera menghubungi Anda</p>
+    <p>Depok, Kelapa 2<br>Melayani wilayah Depok dan sekitarnya</p>
   </div>
 
-  <form action="proses_contact.php" method="POST">
-    <div class="form-group">
-      <label>Nama Lengkap <span style="color: #F44336;">*</span></label>
-      <input type="text" name="nama" placeholder="Masukkan nama lengkap Anda" required>
+  <a href="https://wa.me/6281398838812?text=Halo%20Zarali's%20Catering,%20saya%20ingin%20bertanya%20tentang%20layanan%20catering%20Anda" target="_blank" class="info-card whatsapp-card">
+    <div class="whatsapp-content">
+      <div class="info-icon">💬</div>
+      <div class="whatsapp-text">
+        <h4>Hubungi Kami via WhatsApp</h4>
+        <p>Chat langsung dengan kami untuk konsultasi dan pemesanan • Respon cepat & mudah</p>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label>Nomor Telepon <span style="color: #F44336;">*</span></label>
-      <input type="tel" name="no_telepon" placeholder="08xxxxxxxxxx" required>
-    </div>
-
-    <div class="form-group">
-      <label>Email <span style="color: #F44336;">*</span></label>
-      <input type="email" name="email" placeholder="contoh@email.com" required>
-    </div>
-
-    <div class="form-group">
-      <label>Pesan Anda <span style="color: #F44336;">*</span></label>
-      <textarea name="pesan" placeholder="Tulis pesan Anda di sini..." required></textarea>
-    </div>
-
-    <button type="submit">Kirim Pesan</button>
-  </form>
+    <div class="whatsapp-badge">Klik untuk chat →</div>
+  </a>
 </div>
 
 <footer>
