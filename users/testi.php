@@ -913,7 +913,7 @@ unset($_SESSION['success'], $_SESSION['error']);
 <!-- FLOATING CART -->
 <?php if ($is_logged_in): ?>
 <div class="floating-cart">
-  <a href="keranjang/keranjang.php" class="cart-button" title="Lihat Keranjang">
+  <a href="../keranjang.php" class="cart-button" title="Lihat Keranjang">
     <div class="cart-icon">🛒</div>
     <span class="cart-badge <?= $cart_count == 0 ? 'empty' : '' ?>">
       <?= $cart_count ?>
